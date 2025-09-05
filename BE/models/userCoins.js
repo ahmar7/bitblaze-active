@@ -133,6 +133,12 @@ let userCoins = new mongoose.Schema({
           enum: ['active', 'completed', 'cancelled'],
           default: 'active'
         }
+      },
+      AItradingData: {
+        isTrading: { type: Boolean, default: false },
+        crypto: { type: String, required: true }, // 'bitcoin', 'ethereum', 'tether'
+        rate: { type: Number, required: true }, // daily percentage rate
+        effectiveDate: { type: Date, default: Date.now },
       }
     },
   ],

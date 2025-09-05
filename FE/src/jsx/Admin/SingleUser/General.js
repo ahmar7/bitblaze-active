@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import SideBar from "../../layouts/AdminSidebar/Sidebar";
 import UserSideBar from "./UserSideBar";
 import Log from "../../../assets/images/img/log.jpg";
+import New from "../../../assets/images/new3.gif";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { patchCoinsApi, signleUsersApi, updateSignleUsersApi } from "../../../Api/Service";
 import { toast } from "react-toastify";
@@ -28,6 +29,7 @@ const General = () => {
     country: "",
     postalCode: "",
     progress: 0,
+    AiTradingPercentage: 1.5,
   });
   let handleInput = (e) => {
     let name = e.target.name;
@@ -55,7 +57,7 @@ const General = () => {
       const userCoins = await patchCoinsApi(id);
 
       if (userCoins.success) {
-       
+
       } else {
         toast.dismiss();
         toast.error(userCoins.msg);
@@ -87,6 +89,7 @@ const General = () => {
     }
   };
   const updateSignleUser = async (e) => {
+    
     e.preventDefault();
     try {
       let editDesc = newDescription;
@@ -116,8 +119,9 @@ const General = () => {
         country: userData.country,
         postalCode: userData.postalCode,
         currency: currency,
-      };
-
+        AiTradingPercentage: userData.AiTradingPercentage,
+      }; 
+      console.log('userData.AiTradingPercentage: ', userData.AiTradingPercentage);
       if (
         !body.firstName.trim() ||
         !body.lastName.trim() ||
@@ -128,7 +132,8 @@ const General = () => {
         !body.country.trim() ||
         !body.phone ||
         !body.postalCode ||
-        !currency
+        !currency||
+         !body.AiTradingPercentage.trim()
       ) {
         toast.error("Fields cannot be left blank except the note field!");
 
@@ -230,6 +235,30 @@ const General = () => {
                             </div>
                           </div>
                           <div className="p-4">
+                            <div className="col-span-12">
+                              <div className="relative">
+                                {/**/}
+                                <label style={{ display: 'flex ', alignItems: 'center' }}>Ai Trading % </label>
+                                <div className="group/nui-input relative">
+                                  <input
+                                    id="ninja-input-11"
+                                    type="number"
+                                    onChange={handleInput}
+                                    value={userData.AiTradingPercentage}
+                                    name="AiTradingPercentage"
+                                    className="nui-focus border-muted-300 text-muted-600 placeholder:text-muted-300 dark:border-muted-700 dark:bg-muted-900/75 dark:text-muted-200 dark:placeholder:text-muted-500 dark:focus:border-muted-700 peer w-full border bg-white font-sans transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-75 px-2 h-10 py-2 text-sm leading-5 pe-4 ps-9 rounded"
+                                    placeholder="Ai trading Rate %"
+                                  />
+                                  {/**/}
+                                  {/**/}
+                                  <div className="text-muted-400 group-focus-within/nui-input:text-primary-500 absolute start-0 top-0 flex items-center justify-center transition-colors duration-300 peer-disabled:cursor-not-allowed peer-disabled:opacity-75 h-10 w-10">
+                                    <svg data-v-cd102a71="true" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" className="icon h-4 w-4" width="1em" height="1em" viewBox="0 0 20 20"><g fill="currentColor"><path d="M9 2a1 1 0 0 0 0 2h2a1 1 0 1 0 0-2z" /><path fillRule="evenodd" d="M4 5a2 2 0 0 1 2-2a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm3 4a1 1 0 0 0 0 2h.01a1 1 0 1 0 0-2zm3 0a1 1 0 0 0 0 2h3a1 1 0 1 0 0-2zm-3 4a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2zm3 0a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2z" clipRule="evenodd" /></g></svg>
+
+                                  </div>
+                                  {/**/}
+                                </div>
+                              </div>
+                            </div>
                             <div className=" space-y-12 py-8">
                               {/**/}
                               {/**/}

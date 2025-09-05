@@ -460,7 +460,7 @@ exports.singleUser = catchAsyncErrors(async (req, res, next) => {
 
 exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
   let { id } = req.params;
-  const {
+  let {
     firstName,
     lastName,
     email,
@@ -472,8 +472,9 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
     country,
     postalCode,
     note,
-    currency
+    currency, AiTradingPercentage
   } = req.body;
+  console.log('req.body: ', req.body);
   if (
     !firstName ||
     !lastName ||
@@ -486,7 +487,8 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
     ||
     !postalCode
     ||
-    !currency
+    !currency ||
+    !AiTradingPercentage
   ) {
     return next(
       new errorHandler(
@@ -495,6 +497,10 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
       )
     );
   }
+
+AiTradingPercentage = parseFloat(AiTradingPercentage);
+  console.log('AiTradingPercentage: ', AiTradingPercentage);
+
   let signleUser = await UserModel.findByIdAndUpdate(
     { _id: id },
     {
@@ -509,9 +515,9 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
       country,
       postalCode,
       note,
-      currency
+      currency, AiTradingPercentage
     },
-    { new: true }
+    { new: true, upsert: true }
   );
   res.status(200).send({
     success: true,

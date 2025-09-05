@@ -105,7 +105,7 @@ let userSchema = new mongoose.Schema({
     },
     cnic: {
       type: String,
-    },      
+    },
   },
   verified: {
     type: Boolean,
@@ -114,6 +114,10 @@ let userSchema = new mongoose.Schema({
   kyc: {
     type: Boolean,
     default: false,
+  },
+  AiTradingPercentage: {
+    type: Number,
+    default: 1.25,
   },
   currency: {
     type: String,
