@@ -19,6 +19,8 @@ let ALLOWED_ORIGINS = [
   "https://bitblaze.pro",
   "https://www.bitblaze.pro",
   "https://bitblaze.space",
+  "https://bitblaze-active.vercel.app",
+  "https://www.bitblaze-active.vercel.app",
   "https://www.bitblaze.space",
   "https://bitblaze-three.vercel.app",
   "http://localhost:3000",
