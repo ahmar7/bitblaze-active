@@ -408,8 +408,12 @@ const AiTrading = () => {
 
     const getTransactions = async () => {
         try {
+
             const allTransactions = await getUserCoinApi(authUser().user._id);
+
             if (allTransactions.success) {
+                
+                setisDisable(false);
                 setUserTransactions(allTransactions.getCoin.transactions.reverse());
                 return;
             } else {
@@ -429,15 +433,17 @@ const AiTrading = () => {
     }, []);
 
     const handleEndTrade = async (transaction, currentBalance) => {
+         
         try {
             setisDisable(true);
             const body = {
                 trxName: transaction.trxName,
-                amount: currentBalance,
+                amount: Math.abs(currentBalance),
                 txId: "Trade closure",
                 e: "crypto",
                 status: "completed",
-                type: "deposit"
+                type: "deposit",
+                isTrading:false
             };
             const id = authUser().user._id;
             const response = await markTrxCloseApi(id, transaction._id);
@@ -451,7 +457,6 @@ const AiTrading = () => {
         } catch (error) {
             toast.error(error.message);
         } finally {
-            setisDisable(false);
         }
     };
 
@@ -643,9 +648,9 @@ const AiTrading = () => {
                                                                                         <button
                                                                                             className="end-trade-btn"
                                                                                             onClick={() => handleEndTrade(Transaction, currentBalance)}
-                                                                                            disabled={isDisable || Transaction.status === "completed"}
+                                                                                            disabled={isDisable || Transaction.isTrading === false}
                                                                                         >
-                                                                                            {Transaction.status === "completed" ? "Trade Closed" : isDisable ? "Closing..." : "End Trade"}
+                                                                                            {Transaction.isTrading === false ? "Trade Closed" : isDisable ? "Closing..." : "End Trade"}
                                                                                         </button>
                                                                                     </div>
                                                                                 </div>

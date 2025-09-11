@@ -626,6 +626,7 @@ exports.markTrxClose = catchAsyncErrors(async (req, res, next) => {
     {
       $set: {
         "transactions.$.tradingStatus": "closed",
+        "transactions.$.isTrading": false,
         "transactions.$.closedAt": new Date()
       }
     },
