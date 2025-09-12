@@ -21,6 +21,14 @@
   height: 500px;
   overflow: auto;
 }
+.status-badge.green {
+    background: #44ef55;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 8px;
+}
 
 .staking-grid-wrapper {
   display: flex;

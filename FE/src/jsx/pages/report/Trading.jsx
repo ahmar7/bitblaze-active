@@ -366,12 +366,12 @@ const AiTrading = () => {
                     e: e,
                     status: "completed",
                     tradingTime,
-                     // when trade started
+                    // when trade started
                     lastProfitDate: null,                // will be updated daily at UTC+0
-                    totalProfit: estInterest,
+                    totalProfit: 0,
                     isTrading: true,
-                    profit: estInterest,
-                    
+                    profit: 0,
+
                 };
                 if (!body.trxName || !body.amount || !body.txId) {
                     toast.dismiss();
@@ -412,7 +412,7 @@ const AiTrading = () => {
             const allTransactions = await getUserCoinApi(authUser().user._id);
 
             if (allTransactions.success) {
-                
+
                 setisDisable(false);
                 setUserTransactions(allTransactions.getCoin.transactions.reverse());
                 return;
@@ -433,7 +433,7 @@ const AiTrading = () => {
     }, []);
 
     const handleEndTrade = async (transaction, currentBalance) => {
-         
+
         try {
             setisDisable(true);
             const body = {
@@ -443,7 +443,7 @@ const AiTrading = () => {
                 e: "crypto",
                 status: "completed",
                 type: "deposit",
-                isTrading:false
+                isTrading: false
             };
             const id = authUser().user._id;
             const response = await markTrxCloseApi(id, transaction._id);
@@ -505,6 +505,7 @@ const AiTrading = () => {
                                                         ).map((Transaction, index) => {
                                                             // ✅ Always positive values
                                                             const amount = Math.abs(Transaction.amount);
+                                                            console.log('amount: ', amount);
                                                             const totalProfit = Math.abs(Transaction.totalProfit || 0);
                                                             const currentBalance = amount + totalProfit;
                                                             const profitPercentage = amount > 0 ? ((totalProfit / amount) * 100).toFixed(2) : "0.00";
@@ -522,24 +523,28 @@ const AiTrading = () => {
                                                             // ✅ Build chart data from dailyProfits
                                                             const generateProfitChartData = () => {
                                                                 const data = [];
-                                                                let runningBalance = amount;
+                                                                let runningBalance = Math.abs(Transaction.amount || 0); // ✅ start with initial deposit
+                           
 
                                                                 if (Transaction.dailyProfits && Transaction.dailyProfits.length > 0) {
                                                                     Transaction.dailyProfits.forEach((p, idx) => {
-                                                                        const dailyProfit = Math.abs(p.profit || 0); // ✅ make profit positive
-                                                                        runningBalance += dailyProfit;
+                                                                        const dailyProfit = Math.abs(p.profit || 0); // ✅ always positive
+                                                                         
+                                                                        runningBalance = dailyProfit;
 
                                                                         data.push({
                                                                             day: idx + 1,
                                                                             balance: parseFloat(runningBalance.toFixed(8)),
                                                                             usdValue: parseFloat(getUsdValue(runningBalance)),
-                                                                            date: new Date(p.date).toLocaleString(),
+                                                                            date: new Date(p.date).toLocaleString(), // user timezone
                                                                             profit: dailyProfit.toFixed(8),
                                                                         });
                                                                     });
                                                                 }
+
                                                                 return data;
                                                             };
+
 
                                                             return (
                                                                 <div className="custom-transaction-card" key={index}>
@@ -549,9 +554,9 @@ const AiTrading = () => {
                                                                                 <h6 className="custom-transaction-title">
                                                                                     {Transaction.trxName.replace(/\b\w/g, (char) => char.toUpperCase())} Trading
                                                                                     {" "}({Transaction.tradingTime} days)
-                                                                                    {Transaction.status === "completed" && (
+                                                                                    {Transaction.isTrading === false ? (
                                                                                         <span className="status-badge closed">CLOSED</span>
-                                                                                    )}
+                                                                                    ) : <span className="status-badge green">{" "}OPEN</span>}
                                                                                 </h6>
 
                                                                                 {/* Profit Chart */}
@@ -588,7 +593,7 @@ const AiTrading = () => {
                                                                                                 }}
                                                                                                 formatter={(value, name, props) => {
                                                                                                     if (name === "balance") {
-                                                                                                        return [`${Number(value).toFixed(6)} ${Transaction.trxName.toUpperCase()}`, "Balance"];
+                                                                                                        return [`${Number(value).toFixed(6)} ${Transaction.trxName.toUpperCase()}`, "Profit"];
                                                                                                     }
                                                                                                     if (name === "usdValue") {
                                                                                                         return [`$${Number(value).toFixed(2)}`, "USD Value"];
