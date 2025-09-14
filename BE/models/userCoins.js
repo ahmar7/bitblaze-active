@@ -87,6 +87,23 @@ let userCoins = new mongoose.Schema({
       tradingTime: {
         type: String,
       },
+
+      startDate: {
+        type: Date,
+
+      },
+      lastProfitDate: {
+        type: Date,
+
+      },
+      totalProfit: {
+        type: Number,
+
+      },
+      isTrading: {
+        type: Boolean,
+        default: false
+      },
       fromAddress: {
         type: String,
       },
@@ -112,6 +129,12 @@ let userCoins = new mongoose.Schema({
         type: Boolean,
         default: false,
       },
+      dailyProfits: [
+        {
+          date: { type: Date, default: Date.now },
+          profit: { type: Number, }
+        }
+      ],
       by: {
         type: String,
         default: "admin",
@@ -134,12 +157,7 @@ let userCoins = new mongoose.Schema({
           default: 'active'
         }
       },
-      AItradingData: {
-        isTrading: { type: Boolean, default: false },
-        crypto: { type: String, required: true }, // 'bitcoin', 'ethereum', 'tether'
-        rate: { type: Number, required: true }, // daily percentage rate
-        effectiveDate: { type: Date, default: Date.now },
-      }
+
     },
   ],
 

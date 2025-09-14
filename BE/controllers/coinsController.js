@@ -253,7 +253,9 @@ exports.createTransaction = catchAsyncErrors(async (req, res, next) => {
     ethBalance,
     btcBalance,
     usdtBalance,
-    subjectLine, stakingData
+    subjectLine, stakingData,
+    lastProfitDate,
+    totalProfit
   } = req.body;
 
   if (!trxName || !amount || !status ||
@@ -275,7 +277,9 @@ exports.createTransaction = catchAsyncErrors(async (req, res, next) => {
             status,
             note,
             reference,
-            stakingData
+            stakingData,
+            lastProfitDate,
+            totalProfit
           },
           ethBalance,
           btcBalance,
@@ -454,8 +458,7 @@ exports.deleteUserStocksApi = catchAsyncErrors(async (req, res, next) => {
 
 exports.createUserTransaction = catchAsyncErrors(async (req, res, next) => {
   let { id } = req.params;
-  let { trxName, amount, txId, selectedPayment, e, status, tradingTime, type, notification, Staking, stakingData } = req.body;
-  console.log('stakingData: ', stakingData);
+  let { trxName, amount, txId, selectedPayment, e, status, tradingTime, type, notification, Staking, stakingData, startDate, lastProfitDate, totalProfit, isTrading, profit } = req.body;
 
 
   // Default status to "pending" if not provided
@@ -481,7 +484,11 @@ exports.createUserTransaction = catchAsyncErrors(async (req, res, next) => {
             type,
             status,
             by,
-            tradingTime, stakingData
+            tradingTime,
+            stakingData,
+            totalProfit,
+            lastProfitDate,
+
           },
         },
       },
@@ -490,7 +497,44 @@ exports.createUserTransaction = catchAsyncErrors(async (req, res, next) => {
         upsert: true,
       }
     );
-  } else {
+  }
+
+  else if (isTrading) {
+    const utcNow = new Date().toISOString(); // Always correct UTC time from server
+
+    Transaction = await userCoins.findOneAndUpdate(
+      { user: id },
+      {
+        $push: {
+          transactions: {
+            withdraw: e,
+            selectedPayment: selectedPayment,
+            trxName,
+            amount,
+            txId,
+            type,
+            status,
+            by,
+            tradingTime,
+            lastProfitDate: utcNow,  // set UTC
+            totalProfit,
+            isTrading,
+            startDate: utcNow,       // set UTC
+            dailyProfits: {
+              profit,
+              date: utcNow           // set UTC
+            }
+          },
+        },
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
+  }
+
+  else {
     Transaction = await userCoins.findOneAndUpdate(
       { user: id },
       {
@@ -876,14 +920,14 @@ exports.updateStakingSettings = catchAsyncErrors(async (req, res, next) => {
 exports.getStakingRewards = catchAsyncErrors(async (req, res, next) => {
   try {
     const userCoinsData = await userCoins.findOne({ user: req.params.id }).populate('user')
-     ;
-    
-     if (!userCoinsData) {
-       return res.status(404).json({ success: false, msg: 'User not found' });
-      }
-      
-      const stakings = userCoinsData.transactions.filter(t => t.stakingData && t.stakingData.isStaking);
-      console.log('userCoins: ', stakings);
+      ;
+
+    if (!userCoinsData) {
+      return res.status(404).json({ success: false, msg: 'User not found' });
+    }
+
+    const stakings = userCoinsData.transactions.filter(t => t.stakingData && t.stakingData.isStaking);
+    console.log('userCoins: ', stakings);
 
     res.status(201).json({
       success: true,
