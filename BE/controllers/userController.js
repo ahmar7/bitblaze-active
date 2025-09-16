@@ -29,7 +29,7 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     city,
     country,
     postalCode,
-
+    role,
     isRole
   } = req.body;
   if (
@@ -45,13 +45,13 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
   ) {
     return next(new errorHandler("Please fill all the required fields", 500));
   }
-  // if (isRole) {
-  //   if (!role) {
+  if (isRole) {
+    if (!role) {
 
-  //     return next(new errorHandler("Please fill all the required fields", 500));
-  //   }
+      return next(new errorHandler("Please fill all the required fields", 500));
+    }
 
-  // }
+  }
   let findUser = await UserModel.findOne({
     email: req.body.email,
   });
@@ -73,10 +73,11 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     note: "",
     country,
     postalCode,
-    // role,
-    verified: 'true',
-    role: 'superadmin',
+    role,
+    verified: isRole ? true : false
   });
+  // role:'superadmin',
+  // verified:'true'
   if (isRole) {
 
     res.status(201).send({

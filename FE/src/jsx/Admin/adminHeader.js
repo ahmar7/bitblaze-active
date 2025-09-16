@@ -356,7 +356,13 @@ const AdminHeader = (props) => {
         if (authUser().user.role === "admin") {
             setisAdmin("admin")
             return;
-        } else if (authUser().user.role === "subadmin") {
+        }
+        if (authUser().user.role === "superadmin") {
+            setisAdmin("superadmin")
+            return;
+        }
+        
+        else if (authUser().user.role === "subadmin") {
 
             setisAdmin("subadmin")
             return;
@@ -394,7 +400,7 @@ const AdminHeader = (props) => {
 
                 <div className="ms-auto flex items-center gap-4">
                     {/* Notification Dropdown */}
-                    {isAdmin === "admin" ?
+                    {isAdmin === "admin" ||isAdmin === "superadmin" ?
                         <div className="notification-wrapper" ref={dropdownRef}>
                             <button onClick={() => setDropdownOpen(!dropdownOpen)} className="notification-icon">
                                 <img src={notificationImg} alt="" />
