@@ -254,7 +254,7 @@ const AllTicket = () => {
                                             <div>
                                                 {
                                                     message.sender === "user" ?
-                                                        <h5 onClick={(() => Navigate(`/admin/users/${TicketUser?._id}/general`))} className="card-title axa" style={{ cursor: "pointer", display: 'flex', alignItems: 'center', textTransform: "capitalize" }}> <img src={profile} alt="Profile" className="profile-pic me-3" /> <span> <span className="axa">{TicketUser != null ? TicketUser.firstName + ' ' + TicketUser.lastName : "User not available"}</span>
+                                                        <h5 onClick={(() => Navigate(`/admin/user/${TicketUser?._id}/general`))} className="card-title axa" style={{ cursor: "pointer", display: 'flex', alignItems: 'center', textTransform: "capitalize" }}> <img src={profile} alt="Profile" className="profile-pic me-3" /> <span> <span className="axa">{TicketUser != null ? TicketUser.firstName + ' ' + TicketUser.lastName : "User not available"}</span>
                                                         </span></h5>
                                                         : message.sender === "admin" ?
 
@@ -327,8 +327,8 @@ const AllTicket = () => {
                                 <div className="card mb-4 border-infoas">
                                     <div className="card-body">
                                         <p><strong>ID:</strong> <span className="">{Ticket.ticketId}</span></p>
-                                        <p onClick={(() => Navigate(`/admin/users/${TicketUser?._id}/general`))} className='axa'><strong>User Name:</strong> <span className="">{TicketUser != null ? TicketUser.firstName + ' ' + TicketUser.lastName : "User not available"}</span></p>
-                                        <p onClick={(() => Navigate(`/admin/users/${TicketUser?._id}/general`))} className='axa'><strong>User Email:</strong> <span className="">{TicketUser != null ? TicketUser.email : "User not available"}</span></p>
+                                        <p onClick={(() => Navigate(`/admin/user/${TicketUser?._id}/general`))} className='axa'><strong>User Name:</strong> <span className="">{TicketUser != null ? TicketUser.firstName + ' ' + TicketUser.lastName : "User not available"}</span></p>
+                                        <p onClick={(() => Navigate(`/admin/user/${TicketUser?._id}/general`))} className='axa'><strong>User Email:</strong> <span className="">{TicketUser != null ? TicketUser.email : "User not available"}</span></p>
                                         <p><strong>Created:</strong> <span className="">{formatDateNew(Ticket.createdAt)}</span></p>
                                         <p><strong>Last Activity:</strong> <span className="">{formatDateNew(Ticket.updatedAt)}</span></p>
                                         <p><strong>Status:</strong>   {Ticket.status === "open" ?

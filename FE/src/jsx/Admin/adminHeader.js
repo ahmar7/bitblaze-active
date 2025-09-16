@@ -435,7 +435,7 @@ const AdminHeader = (props) => {
 
                                                             </div>
 
-                                                            <Link to={`/admin/users/${notification.userId}/general`} className="user-email user-em">From: <span className="user-em">{notification.userEmail || 'N/A'}</span></Link>
+                                                            <Link to={`/admin/user/${notification.userId}/general`} className="user-email user-em">From: <span className="user-em">{notification.userEmail || 'N/A'}</span></Link>
                                                             {notification.status && (
                                                                 <span className="card-status" >Status: <span className={`${notification.status === "applied" ? "bg-warning badgea badge" : notification.status === "active" ? "badge-solved badgea" : notification.status === "open" ? "badge-open badgea" : ""}`}>{notification.status}</span></span>
                                                             )}
@@ -636,7 +636,7 @@ const AdminHeader = (props) => {
 
                                                                 </div>
 
-                                                                <Link to={`/admin/users/${notification.userId}/general`} className="user-email user-em">From: <span className="user-em">{notification.userEmail || 'N/A'}</span></Link>
+                                                                <Link to={`/admin/user/${notification.userId}/general`} className="user-email user-em">From: <span className="user-em">{notification.userEmail || 'N/A'}</span></Link>
                                                                 {notification.status && (
                                                                     <span className="card-status" >Status: <span className={`${notification.status === "applied" ? "bg-warning badgea badge" : notification.status === "active" ? "badge-solved badgea" : notification.status === "open" ? "badge-open badgea" : ""}`}>{notification.status}</span></span>
                                                                 )}

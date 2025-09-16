@@ -88,9 +88,18 @@ let userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isSubManagement: {
+    type: Boolean,
+    default: false,
+  },
+  isProfileUpdate: {
+    type: Boolean,
+    default: false,
+  },
   role: {
     type: String,
     default: "user",
+    enum: ['superadmin', 'admin', 'subadmin', 'user']
   },
   submitDoc: {
     status: {

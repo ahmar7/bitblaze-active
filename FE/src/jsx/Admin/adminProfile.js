@@ -38,11 +38,15 @@ const AdminProfile = () => {
       setActive(true);
     }
   };
+
   const getSignleUser = async () => {
     try {
       const signleUser = await signleUsersApi(authUser().user._id);
 
       if (signleUser.success) {
+        if (signleUser.signleUser.isProfileUpdate === false && signleUser.signleUser.role === 'admin') {
+          Navigate("/admin/dashboard");
+        }
         setUserData(signleUser.signleUser);
       } else {
         toast.dismiss();

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Log from "../../../assets/newlogo/logo-blue.png";
 import { useAuthUser, useSignOut } from "react-auth-kit";
-import { logoutApi, addUserByEmailApi } from "../../../Api/Service";
+import { logoutApi, addUserByEmailApi, signleUsersApi } from "../../../Api/Service";
 import { toast } from "react-toastify";
 import './Sidebar.css'
 import 'react-responsive-modal/styles.css';
@@ -21,7 +21,7 @@ const SideBar = (props) => {
     if (authUser().user.role === "user") {
       setAdmin(authUser().user);
       return;
-    } else if (authUser().user.role === "admin") {
+    } else if (authUser().user.role === "admin" || authUser().user.role === "superadmin") {
       setAdmin(authUser().user);
       return;
     }
@@ -88,6 +88,31 @@ const SideBar = (props) => {
   };
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
+  // ////////////////////////
+  const [allowManageSubAdmins, setAllowManageSubAdmins] = useState(false);
+  const [allowEditProfile, setAllowEditProfile] = useState(false);
+  const getSignleUser = async () => {
+    try {
+      const signleUser = await signleUsersApi(authUser().user._id);
+
+      if (signleUser.success) {
+        setAllowManageSubAdmins(signleUser?.signleUser?.isSubManagement)
+        setAllowEditProfile(signleUser?.signleUser?.isProfileUpdate)
+        console.log('signleUser: ', signleUser.signleUser.isProfileUpdate);
+      } else {
+        toast.dismiss();
+        toast.error(signleUser.msg);
+      }
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error);
+    } finally {
+    }
+  };
+  useEffect(() => {
+
+    getSignleUser()
+  }, []);
   return (
     <>
 
@@ -212,6 +237,38 @@ const SideBar = (props) => {
                 </span>
               </NavLink>
             </li>
+            {authUser().user.role === "superadmin" &&
+              <> <li>
+                <NavLink
+                  to="/superadmin/admins"
+                  className=" nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex cursor-pointer items-center gap-4 rounded-lg py-3 transition-colors duration-300 px-4"
+                  aria-current="page"
+                >
+                  <svg
+                    data-v-cd102a71
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    aria-hidden="true"
+                    role="img"
+                    className="icon w-5 h-5"
+                    width="1em"
+                    height="1em"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill="currentColor"
+                      fillRule="evenodd"
+                      d="M5 3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm9 4a1 1 0 1 0-2 0v6a1 1 0 1 0 2 0zm-3 2a1 1 0 1 0-2 0v4a1 1 0 1 0 2 0zm-3 3a1 1 0 1 0-2 0v1a1 1 0 1 0 2 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="whitespace-nowrap font-sans text-sm block">
+                    Manage Admins
+                  </span>
+                </NavLink>
+              </li>
+              </>}
+
             <li>
               <div className="border-muted-200 dark:border-muted-700 my-3 h-px w-full border-t" />
             </li>
@@ -242,7 +299,7 @@ const SideBar = (props) => {
                 </span>
               </NavLink>
             </li>
-            <li>
+            {authUser().user.role === "superadmin" && <li>
               <NavLink
                 to="/admin/user/links"
                 className="router-link-active nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex cursor-pointer items-center gap-4 rounded-lg py-3 transition-colors duration-300 px-4"
@@ -270,8 +327,9 @@ const SideBar = (props) => {
                   User Links Management
                 </span>
               </NavLink>
-            </li>
-            {authUser().user.role === "admin" ? (
+            </li>}
+
+            {authUser().user.role === "admin" && allowManageSubAdmins || authUser().user.role === "superadmin" ? (
               <li>
                 <NavLink
                   to="/admin/subadmin"
@@ -302,10 +360,10 @@ const SideBar = (props) => {
             ) : (
               ""
             )}
-            {authUser().user.role === "admin" ? (
+            {authUser().user.role === "admin" || authUser().user.role === "superadmin" ? (
               <li>
                 <NavLink
-                  to="/admin/add-user"
+                  to="/admin/add-new-member"
                   className=" router-link-active nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex cursor-pointer items-center gap-4 rounded-lg py-3 transition-colors duration-300 px-4"
                 >
                   <svg
@@ -329,47 +387,14 @@ const SideBar = (props) => {
                   </svg>
 
                   <span className="whitespace-nowrap font-sans text-sm block">
-                    Add User
+                    Add New Member
                   </span>
                 </NavLink>
               </li>
             ) : (
               ""
             )}
-            {authUser().user.role === "admin" ? (
-              <li>
-                <NavLink
-                  to="/admin/add-subadmin"
-                  className=" router-link-active nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex cursor-pointer items-center gap-4 rounded-lg py-3 transition-colors duration-300 px-4"
-                >
-                  <svg
-                    data-v-cd102a71="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                    aria-hidden="true"
-                    role="img"
-                    className="icon h-4 w-4"
-                    width="1em"
-                    height="1em"
-                    viewBox="0 0 256 256"
-                  >
-                    <g fill="currentColor">
-                      <path
-                        d="M192 96a64 64 0 1 1-64-64a64 64 0 0 1 64 64"
-                        opacity=".2"
-                      />
-                      <path d="M230.92 212c-15.23-26.33-38.7-45.21-66.09-54.16a72 72 0 1 0-73.66 0c-27.39 8.94-50.86 27.82-66.09 54.16a8 8 0 1 0 13.85 8c18.84-32.56 52.14-52 89.07-52s70.23 19.44 89.07 52a8 8 0 1 0 13.85-8M72 96a56 56 0 1 1 56 56a56.06 56.06 0 0 1-56-56" />
-                    </g>
-                  </svg>
-
-                  <span className="whitespace-nowrap font-sans text-sm block">
-                    Add Sub Admin
-                  </span>
-                </NavLink>
-              </li>
-            ) : (
-              ""
-            )}
+            
             {authUser().user.role === "subadmin" ? (
               <li>
                 <button onClick={onOpenModal}
@@ -404,7 +429,7 @@ const SideBar = (props) => {
               ""
             )}
 
-            {authUser().user.role === "admin" ? (
+            {authUser().user.role === "admin" || authUser().user.role === "superadmin" ? (
               <li>
                 <NavLink
                   to="/admin/transactions/pending"
@@ -465,8 +490,8 @@ const SideBar = (props) => {
               </span>
             </NavLink>
           </li> */}
-
-            <li>
+            {allowEditProfile || authUser().user.role === "superadmin" ?
+             <li>
               <NavLink
                 to="/admin/profile"
                 className=" router-link-active nui-focus text-muted-500 dark:text-muted-400/80 hover:bg-muted-100 dark:hover:bg-muted-700/60 hover:text-muted-600 dark:hover:text-muted-200 flex cursor-pointer items-center gap-4 rounded-lg py-3 transition-colors duration-300 px-4"
@@ -495,7 +520,8 @@ const SideBar = (props) => {
                   Update Profile
                 </span>
               </NavLink>
-            </li>
+            </li>:""}
+
             <li>
               <NavLink
                 to="/admin/support"

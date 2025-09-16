@@ -685,7 +685,7 @@ const UserTransactions = () => {
                         {userDetail._id ? (
                           <span className="block">
                             <Link
-                              to={`/admin/users/${userDetail._id}/general`}
+                              to={`/admin/user/${userDetail._id}/general`}
                               className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:ring-gray-600 dark:ring-inset"
                             >
                               <svg

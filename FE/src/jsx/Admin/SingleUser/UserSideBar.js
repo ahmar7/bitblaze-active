@@ -10,7 +10,7 @@ const UserSideBar = (props) => {
             <li>
               <NavLink
                 aria-current="page"
-                to={`/admin/users/${props.userid}/general`}
+                to={`/admin/user/${props.userid}/general`}
                 className=" text-muted-400 datas hover:text-muted-600 dark:hover:text-muted-200 hover:bg-muted-50 dark:hover:bg-muted-700/50 flex items-center gap-2 rounded-lg p-3 transition-colors duration-300"
               >
                 <svg

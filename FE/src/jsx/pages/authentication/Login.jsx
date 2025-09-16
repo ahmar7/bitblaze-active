@@ -103,7 +103,8 @@ function Login(props) {
 					return;
 				} else if (
 					updateHeader.user.role === "admin" ||
-					updateHeader.user.role === "subadmin"
+					updateHeader.user.role === "subadmin"||
+					updateHeader.user.role === "superadmin"
 				) {
 					const redirectTo = location.state?.from || '/admin/dashboard';
 					navigate(redirectTo);
@@ -141,6 +142,8 @@ function Login(props) {
 		if (isAuthenticated() && authUser().user.role === "admin") {
 			navigate("/admin/dashboard");
 		} else if (isAuthenticated() && authUser().user.role === "subadmin") {
+			navigate("/admin/dashboard");
+		} else if (isAuthenticated() && authUser().user.role === "superadmin") {
 			navigate("/admin/dashboard");
 		}
 	}, []);

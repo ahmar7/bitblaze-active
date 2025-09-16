@@ -171,4 +171,43 @@
 
 .this-model .modal-dialog {
     margin: auto;
-}
+} 
+  .admin-permissions-section {
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: var(--bg-muted-100);
+  }
+  
+  .permission-card {
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+  }
+  
+  .permission-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+  
+  /* Toggle switch styling */
+  .relative.inline-block input:checked + label {
+    background-color: var(--color-primary-500);
+  }
+  
+  .relative.inline-block input:checked + label:before {
+    transform: translateX(24px);
+  }
+  
+  .relative.inline-block label {
+    transition: background-color 0.3s;
+  }
+  
+  .relative.inline-block label:before {
+    transition: transform 0.3s;
+  }
+  
+  @media (max-width: 768px) {
+    .permissions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+ 

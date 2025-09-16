@@ -49,6 +49,9 @@ import SubAdminUsers from "../jsx/Admin/SubAdminUsers.js";
 import AiTradingBot from "../jsx/pages/user/AiTradingBot.js";
 import UserLinks from "../jsx/Admin/UserLinks.js";
 import UserStaking from "../jsx/Admin/SingleUser/userStaking.js";
+import AddAdmin from "../jsx/Admin/AddAdmin.js";
+import AdminManagement from "../jsx/Admin/AdminManagement.js";
+import AdminPermissions from "../jsx/Admin/SingleUser/AdminPermissions.js";
 export default function Router() {
 
   return (
@@ -263,21 +266,22 @@ export default function Router() {
             }
           />
           <Route
-            path="/admin/add-user"
+            path="/admin/add-new-member"
             element={
               <RequireAuth loginPath={"/auth/login"}>
                 <AddUser />
               </RequireAuth>
             }
           />
-          <Route
+          {/* <Route
             path="/admin/add-subadmin"
             element={
               <RequireAuth loginPath={"/auth/login"}>
                 <AddSubAdmin />
               </RequireAuth>
             }
-          />
+          /> */}
+         
 
           <Route
             path="/admin/users"
@@ -303,6 +307,14 @@ export default function Router() {
               </RequireAuth>
             }
           />
+           <Route
+            path="/superadmin/admins"
+            element={
+              <RequireAuth loginPath={"/auth/login"}>
+                <AdminManagement />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/admin/subadmin/users/:id"
             element={
@@ -312,7 +324,15 @@ export default function Router() {
             }
           />
           <Route
-            path="/admin/users/:id/general"
+            path="/admin/permissions/:id"
+            element={
+              <RequireAuth loginPath={"/auth/login"}>
+                <AdminPermissions />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/user/:id/general"
             element={
               <RequireAuth loginPath={"/auth/login"}>
                 <General />

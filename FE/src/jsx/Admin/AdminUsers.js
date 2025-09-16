@@ -34,7 +34,7 @@ const AdminUsers = () => {
       if (allUsers.success) {
         let filtered;
         let unverified;
-        if (authUser().user.role === "admin") {
+        if (authUser().user.role === "admin"||authUser().user.role === "superadmin") {
           filtered = allUsers.allUsers.filter((user) => {
             return user.role.includes("user") && user.verified === true;
           });
@@ -330,7 +330,7 @@ const AdminUsers = () => {
                                     {user.email}
                                   </p>
                                 </div>
-                                {authUser().user.role === "admin" ? (
+                                {authUser().user.role === "admin"||authUser().user.role === "superadmin" ? (
                                   <>
                                     <p className="mt-1 font-heading text-base font-medium leading-none">
                                       User Shared with sub admin
@@ -359,7 +359,7 @@ const AdminUsers = () => {
                                 <div className="flex items-center mt-5">
                                   <Link
                                     data-v-71bb21a6
-                                    to={`/admin/users/${user._id}/general`}
+                                    to={`/admin/user/${user._id}/general`}
                                     className="is-button rounded is-button-default w-full"
                                     disabled="false"
                                   >
@@ -425,7 +425,7 @@ const AdminUsers = () => {
                                     <span className="ms-1">Contact User</span>
                                   </Link>
                                 </div>
-                                {authUser().user.role === "admin" ? (
+                                {authUser().user.role === "admin" ||authUser().user.role === "superadmin" ? (
                                   <div
                                     onClick={() => onOpenModal(user)}
                                     className="flex  items-center mt-2"
@@ -510,7 +510,7 @@ const AdminUsers = () => {
                                 <div className="flex items-center mt-5">
                                   <Link
                                     data-v-71bb21a6
-                                    to={`/admin/users/${user._id}/general`}
+                                    to={`/admin/user/${user._id}/general`}
                                     className="is-button rounded is-button-default w-full"
                                     disabled="false"
                                   >

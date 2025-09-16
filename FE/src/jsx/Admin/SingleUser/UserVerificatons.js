@@ -10,8 +10,7 @@ import {
   patchCoinsApi,
   signleUsersApi,
   updateCoinAddressApi,
-  updateKycApi,
-  updateSignleUsersApi,
+  updateKycApi, 
 } from "../../../Api/Service";
 import { toast } from "react-toastify";
 import AdminHeader from "../adminHeader";

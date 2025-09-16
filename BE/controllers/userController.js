@@ -29,7 +29,8 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     city,
     country,
     postalCode,
-    // role,
+    role,
+    isRole
   } = req.body;
   if (
     !firstName ||
@@ -43,6 +44,13 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     !postalCode
   ) {
     return next(new errorHandler("Please fill all the required fields", 500));
+  }
+  if (isRole) {
+    if (!role) {
+
+      return next(new errorHandler("Please fill all the required fields", 500));
+    }
+
   }
   let findUser = await UserModel.findOne({
     email: req.body.email,
@@ -65,7 +73,19 @@ exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
     note: "",
     country,
     postalCode,
+    role,
+    verified: isRole ? true : false
   });
+  // role:'superadmin',
+  // verified:'true'
+  if (isRole) {
+
+    res.status(201).send({
+      msg: `New ${role} added successfully`,
+      success: true,
+    });
+    return
+  }
   const token = await new Token({
     userId: createUser._id,
     token: crypto.randomBytes(32).toString("hex"),
@@ -110,7 +130,7 @@ exports.RegisterSubAdmin = catchAsyncErrors(async (req, res, next) => {
     city,
     country,
     postalCode,
-    // role,
+    role,
   } = req.body;
   if (
     !firstName ||
@@ -121,7 +141,8 @@ exports.RegisterSubAdmin = catchAsyncErrors(async (req, res, next) => {
     !address ||
     !city ||
     !country ||
-    !postalCode
+    !postalCode ||
+    !role
   ) {
     return next(new errorHandler("Please fill all the required fields", 500));
   }
@@ -146,13 +167,14 @@ exports.RegisterSubAdmin = catchAsyncErrors(async (req, res, next) => {
     note: "",
     country,
     postalCode,
-    role: "subadmin", verified: true
+    role,
+    verified: true
   });
 
 
 
   res.status(201).send({
-    msg: "Sub admin added successfully",
+    msg: "Data updated successfully",
     success: true,
   });
   // 
@@ -472,7 +494,8 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
     country,
     postalCode,
     note,
-    currency, AiTradingPercentage
+    currency, AiTradingPercentage, isSubManagement,
+    isProfileUpdate
   } = req.body;
   console.log('req.body: ', req.body);
   if (
@@ -498,7 +521,7 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
-AiTradingPercentage = parseFloat(AiTradingPercentage);
+  AiTradingPercentage = parseFloat(AiTradingPercentage);
   console.log('AiTradingPercentage: ', AiTradingPercentage);
 
   let signleUser = await UserModel.findByIdAndUpdate(
@@ -515,7 +538,7 @@ AiTradingPercentage = parseFloat(AiTradingPercentage);
       country,
       postalCode,
       note,
-      currency, AiTradingPercentage
+      currency, AiTradingPercentage, isSubManagement, isProfileUpdate
     },
     { new: true, upsert: true }
   );

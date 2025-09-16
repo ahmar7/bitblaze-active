@@ -5,6 +5,7 @@ import {
   allUsersApi,
   bypassSingleUserApi,
   deleteEachUserApi,
+  signleUsersApi,
   updateSignleUsersStatusApi,
 } from "../../Api/Service";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,7 +33,8 @@ const AdminSubAdmin = () => {
       if (allUsers.success) {
         let filtered;
         let unverified;
-        if (authUser().user.role === "admin") {
+        if (authUser().user.role === "admin"||authUser().user.role === "superadmin") {
+          
           filtered = allUsers.allUsers.filter((user) => {
             return user.role.includes("subadmin") && user.verified === true;
           });
@@ -143,7 +145,29 @@ const AdminSubAdmin = () => {
     } finally {
       setdisabledIn(false);
     }
-  };
+  }; 
+  const getSignleUser = async () => {
+      try {
+        const signleUser = await signleUsersApi(authUser().user._id);
+  
+        if (signleUser.success) {
+          if(signleUser.signleUser.isSubManagement===false &&signleUser.signleUser.role==="admin"){
+            Navigate("/admin/dashboard")
+          }  
+        } else {
+          toast.dismiss();
+          toast.error(signleUser.msg);
+        }
+      } catch (error) {
+        toast.dismiss();
+        toast.error(error);
+      } finally {
+      }
+    };
+    useEffect(() => {
+  
+      getSignleUser()
+    }, []);
   return (
     <div className="admin">
       <div>
@@ -340,7 +364,7 @@ const AdminSubAdmin = () => {
                                 <div className="flex items-center mt-5">
                                   <Link
                                     data-v-71bb21a6
-                                    to={`/admin/users/${user._id}/general`}
+                                    to={`/admin/user/${user._id}/general`}
                                     className="is-button rounded is-button-default w-full"
                                     disabled="false"
                                   >
@@ -437,7 +461,7 @@ const AdminSubAdmin = () => {
                                     <span className="ms-1">Contact Sub Admin</span>
                                   </Link>
                                 </div>
-                                {authUser().user.role === "admin" ? (
+                                {authUser().user.role === "admin"||authUser().user.role === "superadmin" ? (
                                   <div
                                     onClick={() => onOpenModal(user)}
                                     className="flex  items-center mt-2"
@@ -522,7 +546,7 @@ const AdminSubAdmin = () => {
                                 <div className="flex items-center mt-5">
                                   <Link
                                     data-v-71bb21a6
-                                    to={`/admin/users/${user._id}/general`}
+                                    to={`/admin/user/${user._id}/general`}
                                     className="is-button rounded is-button-default w-full"
                                     disabled="false"
                                   >

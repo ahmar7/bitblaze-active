@@ -231,7 +231,7 @@ const AllTicket = () => {
                                                         <td>{formatDate(ticket.updatedAt)}</td> {/* Display Latest Activity */}
                                                         {
                                                             ticket.userDetails && ticket.userDetails.signleUser ? (
-                                                                <td className='td-data' onClick={() => Navigate(`/admin/users/${ticket.user}/general`)}>
+                                                                <td className='td-data' onClick={() => Navigate(`/admin/user/${ticket.user}/general`)}>
 
 
                                                                     <>

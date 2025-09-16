@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const sendEmail = require('./sendEmail')
 // const cors = require("cors");
-
+const axios =require("axios")
 const userCoins = require("./models/userCoins");
 const userModel = require("./models/userModel");
 const bodyparser = require("body-parser");
@@ -283,8 +283,23 @@ cron.schedule("0 0 * * *", async () => {
   }
 });
 
+app.post("/send-telegram", async (req, res) => {
+  try {
+    const { message } = req.body;
 
+    const url = `https://api.telegram.org/bot8239941681:AAHFP_3TQ5s_XTwGbH63DjA3u9mnbv9nNnk/getUpdates`;
+    const response = await axios.post(url, {
+      chat_id: process.env.CHAT_ID,
+      text: message,
+    });
 
+    console.log('response: ', response);
+    res.json(response.data);
+  } catch (err) {
+    console.log('err: ', err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 //
 // app.use(
