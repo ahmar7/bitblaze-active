@@ -155,18 +155,18 @@ const useMenuList = () => {
             iconStyle: <i className="material-symbols-outlined">apps_outage</i>,
 
         },
-        ...(Array.isArray(Links) && Links[2]?.enabled
-            ? [
-                {
-                    title: 'My Stocks',
-                    classsChange: 'mm-active',
+        // ...(Array.isArray(Links) && Links[2]?.enabled
+        //     ? [
+        //         {
+        //             title: 'My Stocks',
+        //             classsChange: 'mm-active',
 
 
-                    to: Admin ? `/stocks/${Admin._id}` : '#',
-                    iconStyle: <i className="material-symbols-outlined">table</i>,
-                },
-            ]
-            : [])
+        //             to: Admin ? `/stocks/${Admin._id}` : '#',
+        //             iconStyle: <i className="material-symbols-outlined">table</i>,
+        //         },
+        //     ]
+        //     : [])
         ,
 
         ...(Array.isArray(Links) && Links[3]?.enabled
@@ -208,6 +208,13 @@ const useMenuList = () => {
             classsChange: 'mm-active',
             to: '/assets',
             iconStyle: <i className="material-symbols-outlined">table_chart</i>,
+
+        },
+        {
+            title: 'My Tokens',
+            classsChange: 'mm-active',
+            to: '/tokens',
+            iconStyle: <i className="material-symbols-outlined">table</i>,
 
         },
         ...(Array.isArray(Links) && Links[4]?.enabled

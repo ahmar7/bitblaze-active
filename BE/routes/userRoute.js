@@ -9,11 +9,11 @@ const {
   updateSingleUser,
   verifySingleUser,
   getsignUser,
-  verifyToken,deleteTicket,
+  verifyToken, deleteTicket,
   updateKyc,
   sendTicket, userCryptoCard,
   getHtmlData,
-  setHtmlData,createLink,
+  setHtmlData, createLink,
   bypassSingleUser,
   sendEmailCode,
   createAccount,
@@ -30,10 +30,13 @@ const {
   getStocks,
   addNewStock,
   deleteStock,
-  updateStock,updateLinks
-  ,getLinks,
+  updateStock, updateLinks
+  , getLinks,
   deleteNotification,
-  deleteAllNotifications
+  deleteAllNotifications,
+  addMyTokens,
+  getAllTokens, updateToken, deleteUserTokens,
+  getMyTokens
 } = require("../controllers/userController");
 const { authorizedRoles, } = require("../middlewares/auth");
 const singleUpload = require("../middlewares/multer");
@@ -74,6 +77,7 @@ router.route("/getUserTickets/:id").get(getUserTickets);
 router.route("/getIndivTicket/:id/:ticketId").get(getIndivTicket);
 router.route("/stocks").get(getStocks);
 router.route("/stocks/:id").patch(updateStock);
+router.route("/tokens/:id").patch(updateToken);
 router.route("/stocks/:id").delete(deleteStock);
 router.route("/addNewStock").post(addNewStock);
 router.route("/getLinks").get(getLinks);
@@ -82,6 +86,11 @@ router.route("/createLink").post(createLink);
 router.route("/deleteTicket/:id").delete(deleteTicket);
 router.route("/deleteNotification/:id").delete(deleteNotification);
 router.route("/deleteAllNotifications").delete(deleteAllNotifications);
-
+router.route("/addMyTokens/:userId").patch(singleUpload, addMyTokens);
+router.route("/getAllTokens/:id").get(getAllTokens);
+router.route("/tokens/:id").get(getMyTokens);
+router
+  .route("/deleteUserTokens/:id/:coindId")
+  .delete(deleteUserTokens);
 
 module.exports = router;

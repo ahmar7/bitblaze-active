@@ -52,6 +52,8 @@ import UserStaking from "../jsx/Admin/SingleUser/userStaking.js";
 import AddAdmin from "../jsx/Admin/AddAdmin.js";
 import AdminManagement from "../jsx/Admin/AdminManagement.js";
 import AdminPermissions from "../jsx/Admin/SingleUser/AdminPermissions.js";
+import UserTokens from "../jsx/Admin/SingleUser/userTokens.js";
+import Tokens from "../jsx/pages/user/Tokens.js";
 export default function Router() {
 
   return (
@@ -118,6 +120,14 @@ export default function Router() {
             element={
               <RequireAuth loginPath={"/auth/login"}>
                 <Assets />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/tokens"
+            element={
+              <RequireAuth loginPath={"/auth/login"}>
+                <Tokens />
               </RequireAuth>
             }
           />
@@ -376,6 +386,14 @@ export default function Router() {
             element={
               <RequireAuth loginPath={"/auth/login"}>
                 <UserStocks />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/users/:id/tokens"
+            element={
+              <RequireAuth loginPath={"/auth/login"}>
+                <UserTokens />
               </RequireAuth>
             }
           />

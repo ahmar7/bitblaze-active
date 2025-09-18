@@ -40,6 +40,7 @@ router
 router
   .route("/deleteUserStocksApi/:id/:coindId")
   .delete(deleteUserStocksApi);
+
 router.route("/createTransaction/:id").patch(createTransaction);
 router.route("/createUserStocks/:id").post(createUserStocks);
 router.route("/createUserTransaction/:id").patch(createUserTransaction);

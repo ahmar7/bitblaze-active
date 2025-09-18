@@ -14,6 +14,7 @@ const Token = require("../models/token");
 const sendEmail = require("../utils/sendEmail");
 const htmlModel = require("../models/htmlData");
 const Ticket = require("../models/ticket");
+const MyTokens = require("../models/myTokens");
 const Message = require("../models/message");
 const { default: mongoose } = require("mongoose");
 
@@ -1396,6 +1397,30 @@ exports.updateStock = catchAsyncErrors(async (req, res, next) => {
     res.status(500).json({ success: false, msg: 'Server error' });
   }
 });
+exports.updateToken = catchAsyncErrors(async (req, res, next) => {
+  try {
+
+
+    const { symbol, name, price } = req.body;
+    console.log(' req.bod: ', req.body);
+    const stockId = req.params.id;
+
+    const updatedStock = await Stock.findByIdAndUpdate(
+      stockId,
+      { symbol: symbol.toUpperCase(), name, price },
+      { new: true }
+    );
+
+    if (!updatedStock) {
+      return res.status(404).json({ success: false, msg: 'Stock not found' });
+    }
+
+    res.json({ success: true, stock: updatedStock });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error' });
+  }
+});
 exports.deleteStock = catchAsyncErrors(async (req, res, next) => {
   try {
 
@@ -1573,3 +1598,230 @@ exports.deleteAllNotifications = catchAsyncErrors(async (req, res, next) => {
     res.status(500).json({ success: false, msg: "Server error" });
   }
 });
+exports.addMyTokens = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const userId = req.params.userId; // Assuming you have user authentication
+    const { name, symbol, quantity, value, totalValue } = req.body;
+    let files = req.files
+    if (!files || files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload the logo",
+      });
+    }
+    const uploadFileToCloudinary = (fileBuffer, fileName) => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: "image",
+            folder: `tokenlogo/${Date.now()}`, // better: auto folder per user
+            public_id: fileName.split(".")[0], // remove extension
+            overwrite: true,
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        );
+
+        stream.end(fileBuffer); // pipe buffer into cloudinary stream
+      });
+    };
+
+    const logoFile = files.find((file) => file.fieldname === 'logo');
+
+    const logoUrl = await uploadFileToCloudinary(logoFile.buffer, logoFile.originalname);
+    console.log('logoUrl: ', logoUrl);
+
+
+    if (!name || !symbol || !quantity || !value) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const myToken = await MyTokens.create({
+      user: user._id,
+      logo: logoUrl,
+      name,
+      symbol,
+      quantity,
+      value,
+      totalValue
+    });
+
+
+    res.status(201).json({
+      success: true,
+      msg: 'Token added successfully',
+      myToken
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Server error" });
+  }
+});
+exports.getAllTokens = catchAsyncErrors(async (req, res, next) => {
+  try {
+    let id = req.params.id
+    const allTokens = await MyTokens.find({ user: id });
+    res.json({ success: true, stocks: allTokens });
+
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Server error" });
+  }
+});
+exports.getMyTokens = catchAsyncErrors(async (req, res, next) => {
+  try {
+    let id = req.params.id
+    console.log('id: ', id);
+    const myTokens = await MyTokens.find({ user: id });
+    res.json({ success: true, myTokens });
+
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Server error" });
+  }
+});
+exports.deleteUserTokens = catchAsyncErrors(async (req, res, next) => {
+  const { id, coindId } = req.params; // User ID
+
+  // Check if stockId is provided
+  if (!coindId) {
+    return next(new errorHandler("Token ID is required for deletion", 400));
+  }
+
+  // Find the user and pull (remove) the specific stock from the array
+  const deletedToken = await MyTokens.findOneAndDelete({
+    _id: coindId,
+    user: id,
+  });
+
+  if (!deletedToken) {
+    return res.status(404).json({
+      success: false,
+      message: "Token not found or not owned by user",
+    });
+  }
+
+  res.status(200).send({
+    success: true,
+    msg: "Token deleted successfully",
+    deletedToken
+  });
+});
+exports.updateToken = catchAsyncErrors(async (req, res, next) => {
+  try {
+
+
+    const { logo, symbol, quantity, value, totalValue, name } = req.body;
+    console.log(' req.bod: ', req.body);
+    const tokenId = req.params.id;
+
+    const updatedToken = await MyTokens.findByIdAndUpdate(
+      tokenId,
+      {
+        $set: {
+          logo,
+          symbol: symbol.toUpperCase(),
+          name,
+          quantity,
+          value,
+          totalValue
+        }
+      },
+      { new: true }
+    );
+
+    if (!updatedToken) {
+      return res.status(404).json({ success: false, msg: 'Stock not found' });
+    }
+
+    res.json({ success: true, stock: updatedToken});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: 'Server error' });
+  }
+});
+// exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
+//   let { id } = req.body;
+//   const files = req.files;
+
+//   if (!files || files.length === 0) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "No files uploaded",
+//     });
+//   }
+//   const uploadFileToCloudinary = (fileBuffer, fileName) => {
+//     return new Promise((resolve, reject) => {
+//       cloudinary.uploader.upload_stream({ resource_type: 'image', public_id: `kyc/${id}/${fileName}` }, (error, result) => {
+//         if (error) reject(error);
+//         else resolve(result.secure_url); // Get the Cloudinary URL
+//       }).end(fileBuffer);
+//     });
+//   };
+//   const cnicFile = files.find((file) => file.fieldname === 'cnic');
+//   const billFile = files.find((file) => file.fieldname === 'bill');
+//   if (!cnicFile || !billFile) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Both cnic and bill files are required",
+//     });
+//   }
+//   const cnicUrl = await uploadFileToCloudinary(cnicFile.buffer, cnicFile.originalname);
+//   const billUrl = await uploadFileToCloudinary(billFile.buffer, billFile.originalname);
+//   console.log('billUrl: ', billUrl);
+//   let signleUser = await UserModel.findByIdAndUpdate(
+//     { _id: id },
+//     {
+//       submitDoc: {
+//         status: "completed",
+//         cnic: cnicUrl,  // Store the Cloudinary URL for cnic
+//         bill: billUrl,  // Store the Cloudinary URL for bill
+//       },
+//     },
+//     { new: true, upsert: true }
+//   );
+
+//   console.log('signleUser: ', signleUser);
+//   signleUser.save();
+//   await notificationSchema.create({
+//     userId: signleUser._id,
+//     type: "KYC_request",
+//     content: `You have a new KYC application from ${signleUser.firstName}  ${signleUser.lastName}.`,
+
+//     userEmail: signleUser.email,
+//     userName: `${signleUser.firstName} ${signleUser.lastName}`
+//   });
+
+//   //
+//   res.status(200).send({
+//     success: true,
+//     msg: "Thank you for submitting KYC documents.",
+//     signleUser,
+//   });
+//   const url = `${process.env.BASE_URL}/admin/users/${signleUser._id}/verifications`
+//   let subject = `New KYC Request `;
+//   let text = `Hi there,
+
+// A user has submitted their KYC details. Please find the information below:
+
+// Name: ${signleUser.firstName} ${signleUser.lastName}
+// Email: ${signleUser.email}
+
+// You can review the submitted documents by clicking the link below:
+// ${url}
+
+// Best regards,
+// The ${process.env.WebName} Team
+// `;
+//   sendEmail(process.env.USER, subject, text)
+//     .catch(err => console.error("Email send error:", err));
+
+// });

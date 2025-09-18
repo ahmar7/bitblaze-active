@@ -456,6 +456,7 @@ exports.deleteUserStocksApi = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+
 exports.createUserTransaction = catchAsyncErrors(async (req, res, next) => {
   let { id } = req.params;
   let { trxName, amount, txId, selectedPayment, e, status, tradingTime, type, notification, Staking, stakingData, startDate, lastProfitDate, totalProfit, isTrading, profit } = req.body;

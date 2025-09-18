@@ -134,6 +134,9 @@ export const UnassignUserApi = (id) => {
 export const deleteUserStocksApi = (coindId, id) => {
   return deleteApi(`deleteUserStocksApi/${id}/${coindId}`, id, coindId);
 };
+export const deleteUserTokensApi = (coindId, id) => {
+  return deleteApi(`deleteUserTokens/${id}/${coindId}`, id, coindId);
+};
 export const updateKycApi = (id, data) => {
   return patchApi(`updateKyc/${id}`, data);
 };
@@ -152,6 +155,7 @@ export const deleteSingleFileApi = (_id) => {
 export const PaymentsApi = (id, data) => {
   return patchApi(`createAccount/${id}`, data);
 };
+
 export const addCardApi = (id, data) => {
   return patchApi(`addCard/${id}`, data);
 };
@@ -182,6 +186,9 @@ export const addNewStockApi = (data) => {
 export const updateStockApi = (stockId, stockData) => {
   return patchApi(`stocks/${stockId}`, stockData);
 };
+export const updateTokenApi = (tokenId, tokenData) => {
+  return patchApi(`tokens/${tokenId}`, tokenData);
+};
 export const deleteStockApi = (stockId) => {
   return deleteApi(`stocks/${stockId}`);
 };
@@ -209,3 +216,12 @@ export const deleteNotificationApi  = (id) => {
 export const getStakingRewardsApi  = (id) => {
   return getApi(`getStakingRewards/${id}/stakings`);
 }; 
+export const addMyTokensApi = (userId, data) => {
+  return patchFormApi(`/addMyTokens/${userId}`, data);
+};
+export const getAllTokensApi = (id) => {
+  return getApi(`/getAllTokens/${id}`);
+};
+export const getMyTokensApi = (id) => {
+  return getApi(`/tokens/${id}`);
+};

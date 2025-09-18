@@ -29,7 +29,8 @@
   width: 100% !important;
 }
 .ASMD .modal-content{
-  width: 400px !important;
+  min-width: 400px !important;
+  max-width:70% !important;
 
 }
 .modal-content {
