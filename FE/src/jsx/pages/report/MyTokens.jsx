@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuthUser } from 'react-auth-kit';
-import { getMyTokensApi, getsignUserApi, } from '../../../Api/Service';
+import { getLinksApi, getMyTokensApi, getsignUserApi, } from '../../../Api/Service';
 
 import { Card, Spinner } from 'react-bootstrap';
 import './style.css'
@@ -78,8 +78,7 @@ const MyTokens = () => {
     }, []);
     // withdraw
 
-
-
+   
 
 
 
@@ -122,10 +121,10 @@ const MyTokens = () => {
                                             {UserData == null || UserData == undefined || !UserData ? "" :
                                                 UserData.map((token, index) => (
                                                     < >
-                                                        <tr  key={index} >
+                                                        <tr key={index} >
                                                             <td className='tleft'>
                                                                 <span className="font-w600 fs-14">
-                                                                    <img className='img30' style={{width:"50px",height:"50px",objectFit:"fill",borderRadius:"100%", border:"2px solid white"}} src={token.logo} alt="" />{token.name}</span>
+                                                                    <img className='img30' style={{ width: "50px", height: "50px", objectFit: "fill", borderRadius: "100%", border: "2px solid white" }} src={token.logo} alt="" />{token.name}</span>
                                                             </td>
                                                             <td className=''>
                                                                 <span className="font-w600 fs-14">

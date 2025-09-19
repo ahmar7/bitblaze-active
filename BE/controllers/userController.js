@@ -496,7 +496,7 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
     postalCode,
     note,
     currency, AiTradingPercentage, isSubManagement,
-    isProfileUpdate
+    isProfileUpdate, isTokenManagement
   } = req.body;
   console.log('req.body: ', req.body);
   if (
@@ -539,7 +539,7 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
       country,
       postalCode,
       note,
-      currency, AiTradingPercentage, isSubManagement, isProfileUpdate
+      currency, AiTradingPercentage, isSubManagement, isProfileUpdate, isTokenManagement
     },
     { new: true, upsert: true }
   );
@@ -1493,28 +1493,40 @@ const defaultLinks = [
     path: "/swap",
     enabled: true,
   },
+  {
+    name: "My Tokens",
+    path: "/tokens",
+    enabled: true,
+  },
 ];
 
 exports.getLinks = catchAsyncErrors(async (req, res, next) => {
   try {
+    // 1️⃣ Get all existing DB links
+    const dbLinks = await userLink.find().sort({ _id: 1 });
 
-    let links = await userLink.find().sort({ _id: 1 });
+    // 2️⃣ Find which defaultLinks are missing in DB
+    const dbNames = dbLinks.map(link => link.name);
+    const newLinks = defaultLinks.filter(def => !dbNames.includes(def.name));
 
-    // If empty, insert defaults
-    if (links.length === 0) {
-      await userLink.insertMany(defaultLinks);
-      links = await userLink.find().sort({ _id: 1 });
+    // 3️⃣ Insert any new default links
+    if (newLinks.length > 0) {
+      await userLink.insertMany(newLinks);
     }
-    console.log('links: ', links);
 
+    // 4️⃣ Fetch again to include newly inserted ones
+    const updatedLinks = await userLink.find().sort({ _id: 1 });
 
-    res.status(200).json({ success: true, links });
-  } catch (error) {
-
-    console.error(err);
-    res.status(500).json({ success: false, msg: 'Server error' });
+    res.status(200).json({
+      success: true,
+      links: updatedLinks,
+    });
+  } catch (err) {
+    console.error("getLinks error:", err);
+    res.status(500).json({ success: false, msg: "Server error" });
   }
 });
+
 exports.updateLinks = catchAsyncErrors(async (req, res, next) => {
   try {
 
@@ -1742,7 +1754,7 @@ exports.updateToken = catchAsyncErrors(async (req, res, next) => {
       return res.status(404).json({ success: false, msg: 'Stock not found' });
     }
 
-    res.json({ success: true, stock: updatedToken});
+    res.json({ success: true, stock: updatedToken });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, msg: 'Server error' });

@@ -423,7 +423,7 @@ const AddTokenModal = ({ show, onClose, onAdd }) => {
     );
 };
 const UserTokens = () => {
-    
+
 
     let { id } = useParams();
 
@@ -504,7 +504,7 @@ const UserTokens = () => {
     };
 
 
- 
+
 
     let authUser = useAuthUser();
     let Navigate = useNavigate();
@@ -562,6 +562,31 @@ const UserTokens = () => {
     const handleCloseEditModal = () => {
         setShowEditTokenModal(false);
     };
+ 
+    const getSignleUser = async () => {
+        try {
+            const signleUser = await signleUsersApi(authUser().user._id);
+
+            if (signleUser.success) { 
+                if (signleUser.signleUser.isTokenManagement === false && signleUser.signleUser.role === 'admin') {
+                    Navigate("/admin/dashboard"); 
+                    return
+                } 
+            } else {
+                toast.dismiss();
+                toast.error(signleUser.msg);
+            }
+        } catch (error) {
+            toast.dismiss();
+            toast.error(error);
+        } finally {
+            setisLoading(false);
+        }
+    };
+    useEffect(() => {
+
+        getSignleUser()
+    }, []);
     return (
         <>
 
@@ -596,7 +621,7 @@ const UserTokens = () => {
                                 <seokit />
                                 <div className="min-h-screen overflow-hidden">
                                     <div className="grid gap-8 sm:grid-cols-12">
-                                        <UserSideBar userid={id} />
+                                        <UserSideBar userid={id}  />
                                         <div className="col-span-12 sm:col-span-8 ">
                                             <div className="border-muted-200 dark:border-muted-700 dark:bg-muted-800 relative w-full border bg-white duration-300 rounded-md">
                                                 <div className="flex items-center justify-between p-4">

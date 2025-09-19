@@ -43,9 +43,9 @@ const UserLinks = () => {
     try {
       let enabled = !currentStatus
       const linkData = await updateLinksApi(id, enabled)
+      // const linkData= await patch(`/api/links/${id}`, { enabled: !currentStatus }); // 👈 backend update
       console.log('linkData: ', linkData);
       setLoadingNew(true)
-      // await patch(`/api/links/${id}`, { enabled: !currentStatus }); // 👈 backend update
       console.log('linkData.success: ', linkData.success);
       if (linkData.success) {
         toast.success("link status updated")

@@ -16,6 +16,7 @@ const AdminPermissions = () => {
 
   const [allowManageSubAdmins, setAllowManageSubAdmins] = useState(false);
   const [allowEditProfile, setAllowEditProfile] = useState(false);
+  const [allowEditMyTokens, setallowEditMyTokens] = useState(false);
   const [isSavingPermissions, setIsSavingPermissions] = useState(false);
   const [newDescription, setnewDescription] = useState("");
   const [isDisable, setisDisable] = useState(false);
@@ -61,8 +62,9 @@ const AdminPermissions = () => {
         }
         setUserData(signleUser.signleUser);
         setCurrency(signleUser.signleUser.currency)
-        setAllowManageSubAdmins(signleUser?.signleUser?.isSubManagement) 
+        setAllowManageSubAdmins(signleUser?.signleUser?.isSubManagement)
         setAllowEditProfile(signleUser?.signleUser?.isProfileUpdate)
+        setallowEditMyTokens(signleUser?.signleUser?.isTokenManagement)
         setnewDescription(signleUser.signleUser.note);
 
       } else {
@@ -109,7 +111,8 @@ const AdminPermissions = () => {
         currency: currency,
         AiTradingPercentage: userData.AiTradingPercentage,
         isSubManagement: allowManageSubAdmins,
-        isProfileUpdate: allowEditProfile
+        isProfileUpdate: allowEditProfile,
+        isTokenManagement: allowEditMyTokens,
       };
       if (
         !body.firstName.trim() ||
@@ -152,7 +155,7 @@ const AdminPermissions = () => {
     if (authUser().user.role === "user") {
       Navigate("/dashboard");
       return;
-    }else if(authUser().user.role === "admin") {
+    } else if (authUser().user.role === "admin") {
       Navigate("/admin/dashboard");
       return;
     }
@@ -249,6 +252,21 @@ const AdminPermissions = () => {
                   </div>
                   <p className="text-sm text-gray-600 dark:text-muted-400">
                     Allow administrators to edit their own profile information and settings.
+                  </p>
+                </div>
+                <div className="permission-card bg-white dark:bg-muted-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-muted-700">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-medium text-gray-800 dark:text-white">
+                      User Tokens Access
+                    </h3>
+                    <Switch
+                      checked={allowEditMyTokens}
+                      onChange={() => setallowEditMyTokens(!allowEditMyTokens)}
+                      color="primary"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-muted-400">
+                    Allow administrators to see or edit user tokens of all users "My Token" page.
                   </p>
                 </div>
               </div>

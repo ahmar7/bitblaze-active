@@ -210,13 +210,19 @@ const useMenuList = () => {
             iconStyle: <i className="material-symbols-outlined">table_chart</i>,
 
         },
-        {
-            title: 'My Tokens',
-            classsChange: 'mm-active',
-            to: '/tokens',
-            iconStyle: <i className="material-symbols-outlined">table</i>,
+        ...(Array.isArray(Links) && Links[8]?.enabled
+            ? [
+                {
+                    title: 'My Tokens',
+                    classsChange: 'mm-active',
+                    to: '/tokens',
+                    iconStyle: <i className="material-symbols-outlined">table</i>,
 
-        },
+                },
+            ]
+            : []),
+
+
         ...(Array.isArray(Links) && Links[4]?.enabled
             ? [
                 {

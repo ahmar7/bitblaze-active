@@ -96,6 +96,10 @@ let userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isTokenManagement: {
+    type: Boolean,
+    default: false,
+  },
   role: {
     type: String,
     default: "user",
