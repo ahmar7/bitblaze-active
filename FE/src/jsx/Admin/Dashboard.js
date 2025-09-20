@@ -376,7 +376,7 @@ const Dashboard = () => {
                   zIndex: 999999,
                 }}
               ></div>
-              <div className="permissions-grid grid grid-cols-1 md:grid-cols-2 gap-6">
+              {authUser().user.role === "superadmin" && <div className="permissions-grid grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Allow Admin to see/add/manage sub admins */}
                 {getLoading ? (
                   // 🔹 Skeleton card while data is loading
@@ -410,7 +410,7 @@ const Dashboard = () => {
 
 
 
-              </div>
+              </div>}
               <br />
 
               {/* Admin Permissions Section */}
