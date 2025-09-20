@@ -19,6 +19,7 @@ const Message = require("../models/message");
 const { default: mongoose } = require("mongoose");
 
 const Stock = require('../models/stock');
+const UserRestriction = require("../models/usersRestrictions");
 exports.RegisterUser = catchAsyncErrors(async (req, res, next) => {
   const {
     firstName,
@@ -421,14 +422,27 @@ ${description}`;
 //
 exports.sendEmailCode = catchAsyncErrors(async (req, res, next) => {
   //
-  const { email, id, code } = req.body;
+  const { email, id, code, username } = req.body;
   let _id = id;
 
   await UserModel.findById(_id);
-  let subject = `KYC Verification OTP`;
-  let text = `Your OTP for the verification of KYC: 
+  let subject = `Your Secure 2FA Verification Code`;
 
-${code}
+  let text = `
+Hello ${username || ''},
+
+We received a request to perform a secure action on your account.
+
+🔑 Your One-Time Verification Code is:
+
+    ${code}
+ 
+Do NOT share this code with anyone—even if they claim to be from our team.
+
+If you did not request this code, please ignore this email or contact our support immediately.
+
+Stay safe,
+The ${process.env.WebName} Team
 `;
   let sendEmailError = await sendEmail(email, subject, text);
   if (sendEmailError) {
@@ -1759,6 +1773,38 @@ exports.updateToken = catchAsyncErrors(async (req, res, next) => {
     console.error(err);
     res.status(500).json({ success: false, msg: 'Server error' });
   }
+});
+exports.getUsersRestrictions = catchAsyncErrors(async (req, res) => {
+  let settings = await UserRestriction.findOne();
+  // only one document 
+  if (!settings) settings = new UserRestriction();
+
+  await settings.save();
+  if (!settings) {
+    return res.status(404).json({ success: false, msg: "Restrictions not found" });
+  }
+  res.json({ success: true, data: settings });
+});
+
+// 🔹 Create or Update the single document (admin only)
+exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
+  const {
+    withdrawal2Fa
+  } = req.body;
+
+  // Find the single settings doc or create if not exists
+  let settings = await UserRestriction.findOne();
+
+  if (!settings) settings = new UserRestriction();
+
+  settings.withdrawal2Fa =
+    typeof withdrawal2Fa === "boolean" ? withdrawal2Fa : settings.withdrawal2Fa;
+
+
+
+  await settings.save();
+
+  res.json({ success: true, msg: "Data updated successfully", data: settings });
 });
 // exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
 //   let { id } = req.body;

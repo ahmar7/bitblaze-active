@@ -36,7 +36,9 @@ const {
   deleteAllNotifications,
   addMyTokens,
   getAllTokens, updateToken, deleteUserTokens,
-  getMyTokens
+  getMyTokens,
+  getUsersRestrictions,
+  updateUsersRestrictions
 } = require("../controllers/userController");
 const { authorizedRoles, } = require("../middlewares/auth");
 const singleUpload = require("../middlewares/multer");
@@ -90,7 +92,13 @@ router.route("/addMyTokens/:userId").patch(singleUpload, addMyTokens);
 router.route("/getAllTokens/:id").get(getAllTokens);
 router.route("/tokens/:id").get(getMyTokens);
 router
-  .route("/deleteUserTokens/:id/:coindId")
-  .delete(deleteUserTokens);
+.route("/deleteUserTokens/:id/:coindId")
+.delete(deleteUserTokens);
+
+router.route("/restrictions").get(getUsersRestrictions);
+
+// PUT – only admin should access this
+router.route("/restrictionsUpdate").patch(updateUsersRestrictions);
+// router.route("/restrictions").post(updateUsersRestrictions);
 
 module.exports = router;

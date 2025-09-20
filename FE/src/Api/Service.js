@@ -204,18 +204,18 @@ export const deleteTicketApi = (id) => {
 export const getStakingSettingsApi = (id) => {
   return getApi(`getStakingSettings/${id}`,);
 };
-export const updateStakingSettingsApi  = (id,settings) => {
-  return patchApi(`updateStakingSettings/${id}`,settings);
+export const updateStakingSettingsApi = (id, settings) => {
+  return patchApi(`updateStakingSettings/${id}`, settings);
 };
-export const deleteAllNotificationsApi  = () => {
+export const deleteAllNotificationsApi = () => {
   return deleteApi(`deleteAllNotifications`);
 };
-export const deleteNotificationApi  = (id) => {
+export const deleteNotificationApi = (id) => {
   return deleteApi(`deleteNotification/${id}`);
 };
-export const getStakingRewardsApi  = (id) => {
+export const getStakingRewardsApi = (id) => {
   return getApi(`getStakingRewards/${id}/stakings`);
-}; 
+};
 export const addMyTokensApi = (userId, data) => {
   return patchFormApi(`/addMyTokens/${userId}`, data);
 };
@@ -225,3 +225,10 @@ export const getAllTokensApi = (id) => {
 export const getMyTokensApi = (id) => {
   return getApi(`/tokens/${id}`);
 };
+export const getRestrictionsApi = () => {
+  return getApi(`/restrictions`);
+};
+export const UpdateRestrictionsApi = (data) => {
+  return patchApi(`/restrictionsUpdate`, data);
+};
+

@@ -374,7 +374,7 @@ const AdminHeader = (props) => {
     return (
         <>
 
-            {console.log('sasa: ', notificationsData)}
+ 
             <div className="relative topakd z-50 mb-5 flex h-16 items-center gap-2 px-4">
                 {/* Existing Buttons */}
                 <button type="button" className="flex  groupas h-10 for-desk w-10 items-center justify-center -ms-3">
