@@ -83,7 +83,6 @@ const PendingTransactions = () => {
           val = 96075.25
         }
         setliveBtc(val);
-        console.log("allTransactions:as ", allTransactions.Transaction);
         setUserTransactions(allTransactions.Transaction.reverse());
 
         // setUserTransactions(pendingTransactionsLengthArray);
@@ -660,7 +659,6 @@ const PendingTransactions = () => {
                       </div>
                     </div>
 
-                    {console.log(singleTransaction, "asa")}
                     <button
                       onClick={toggleModalClose}
                       type="button"

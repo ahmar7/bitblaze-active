@@ -264,13 +264,15 @@ const Dashboard = () => {
   };
   const [Allow2Fa, setAllow2Fa] = useState(false);
   const [isLoadingNew, setisLoadingNew] = useState(false);
+  const [getLoading, setgetLoading] = useState(true);
   const getUserRestrcition = async () => {
     try {
       const data = await getRestrictionsApi();
 
       if (data.success) {
-
         setisLoadingNew(false)
+
+
         setAllow2Fa(data?.data?.withdrawal2Fa);
         return;
       } else {
@@ -281,11 +283,11 @@ const Dashboard = () => {
       toast.dismiss();
       toast.error(error);
     } finally {
+      setgetLoading(false)
     }
   };
   const updateRestrictions = async (data) => {
-    console.log('data: ', data);
-    try {  
+    try {
       setisLoadingNew(true)
       const updateData = await UpdateRestrictionsApi({ withdrawal2Fa: data });
       if (updateData.success) {
@@ -332,7 +334,6 @@ const Dashboard = () => {
   useEffect(() => {
     getAllUsers();
     getTransactions();
-    console.log("authUser: ", authUser().user.role);
     if (authUser().user.role === "user") {
       Navigate("/dashboard");
       return;
@@ -377,23 +378,36 @@ const Dashboard = () => {
               ></div>
               <div className="permissions-grid grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Allow Admin to see/add/manage sub admins */}
-                <div className="permission-card bg-white dark:bg-muted-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-muted-700">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-gray-800 dark:text-white">
-                      Withdrawal 2FA
-                    </h3>
-                    <Switch
-                      disabled={isLoadingNew}
-                      checked={Allow2Fa}
-                      onChange={() => updateRestrictions(!Allow2Fa)}
-                      color="primary"
-                    />
+                {getLoading ? (
+                  // 🔹 Skeleton card while data is loading
+                  <div className="permission-card skeleton-card">
+                    <div className="skeleton-header">
+                      <div className="skeleton skeleton-title"></div>
+                      <div className="skeleton skeleton-switch"></div>
+                    </div>
+                    <div className="skeleton skeleton-text"></div>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-muted-400">
-                    Require all users to enter a one-time verification code sent to their
-                    email before completing any withdrawal.
-                  </p>
-                </div>
+                ) : (
+                  // 🔹 Actual card when loaded
+                  <div className="permission-card bg-white dark:bg-muted-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-muted-700">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-medium text-gray-800 dark:text-white">
+                        Withdrawal 2FA
+                      </h3>
+                      <Switch
+                        disabled={isLoadingNew}
+                        checked={Allow2Fa}
+                        onChange={() => updateRestrictions(!Allow2Fa)}
+                        color="primary"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-muted-400">
+                      Require all users to enter a one-time verification code sent to their
+                      email before completing any withdrawal.
+                    </p>
+                  </div>
+                )}
+
 
 
               </div>

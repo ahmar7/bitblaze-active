@@ -43,12 +43,10 @@ exports.updateAdditionalCoinsForAllUsers = async () => {
       // Add missing coins
       if (missingCoins.length > 0) {
         user.additionalCoins.push(...missingCoins);
-        await user.save(); // Save updated user coins
-        console.log(`Updated additionalCoins for user ${user.user}`);
+        await user.save(); // Save updated user coins 
       }
     }
-
-    console.log("All users updated successfully.");
+ 
   } catch (error) {
     console.error("Error updating users:", error);
   } finally {
@@ -152,7 +150,6 @@ exports.getUserCoin = catchAsyncErrors(async (req, res, next) => {
 });
 exports.getCoinsUser = catchAsyncErrors(async (req, res, next) => {
   let { id } = req.params;
-  console.log('id: ', id);
   let response = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=BTC&convert=USD', {
     headers: {
       'X-CMC_PRO_API_KEY': process.env.BTC_KEY,
@@ -191,10 +188,7 @@ exports.updateCoinAddress = catchAsyncErrors(async (req, res, next) => {
 exports.updateNewCoinAddress = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params; // User ID from params
   const { coinSymbol, address } = req.body.newCoinAddress; // Destructure from body
-
-  console.log('User ID:', id);
-  console.log('Coin Symbol:', coinSymbol);
-  console.log('New Address:', address);
+ 
 
   // Validate input
   if (!coinSymbol || !address) {
@@ -203,7 +197,7 @@ exports.updateNewCoinAddress = catchAsyncErrors(async (req, res, next) => {
 
   // Fetch user's coin data
   const userCoinsData = await userCoins.findOne({ user: id });
-  console.log('userCoinsData: ', userCoinsData);
+ 
   if (!userCoinsData) {
     return next(new errorHandler("User not found", 404));
   }
@@ -423,8 +417,7 @@ exports.createUserStocks = catchAsyncErrors(async (req, res, next) => {
 });
 exports.deleteUserStocksApi = catchAsyncErrors(async (req, res, next) => {
   const { id, coindId } = req.params; // User ID
-  console.log('id: ', id);
-  console.log('coindId: ', coindId); // The specific stock's ID or identifier
+  // The specific stock's ID or identifier
 
   // Check if stockId is provided
   if (!coindId) {
@@ -616,7 +609,6 @@ exports.markTrxClose = catchAsyncErrors(async (req, res, next) => {
     return next(new errorHandler("Transaction not found", 404));
   }
 
-  console.log('Matched transaction:', userCoinsDoc.transactions[0]);
 
   // Update the status of that transaction
   const updatedDoc = await userCoins.findOneAndUpdate(
@@ -637,7 +629,6 @@ exports.markTrxClose = catchAsyncErrors(async (req, res, next) => {
     }
   );
 
-  console.log('updatedDoc: ', updatedDoc);
   res.status(200).json({
     success: true,
     msg: "Transaction status updated to closed",
@@ -650,7 +641,6 @@ exports.createUserTransactionWithdrawSwap = catchAsyncErrors(
     let { id } = req.params;
     let { trxName, amount, txId, fromAddress, status, type, isHidden } =
       req.body;
-    console.log("  req.body: ", req.body);
 
     try {
       let newTransactionWithdraw = await userCoins.findOneAndUpdate(
@@ -689,7 +679,6 @@ exports.createUserTransactionDepositSwap = catchAsyncErrors(
     let { id } = req.params;
     let { trxName, amount, txId, fromAddress, status, type, isHidden } =
       req.body;
-    console.log("req.body: ", req.body);
 
     try {
       let newTransactionDeposit = await userCoins.findOneAndUpdate(
@@ -729,7 +718,6 @@ exports.createUserTransactionDepositSwap = catchAsyncErrors(
 // exports.createUserTransactionSwap = catchAsyncErrors(async (req, res, next) => {
 //   let { id } = req.params;
 //   // let { trxName, amount, txId, selectedPayment, e } = req.body;
-//   console.log("req.body: ", req.body);
 //   // let status = "pending";
 //   // let type = "withdraw";
 //   // let by = "user";
@@ -811,7 +799,6 @@ exports.deleteEachUser = catchAsyncErrors(async (req, res, next) => {
 exports.UnassignUser = catchAsyncErrors(async (req, res, next) => {
   let { id } = req.params;
   let signleUser = await userModel.findById({ _id: id });
-  console.log('signleUser: ', signleUser);
 
   if (!signleUser) {
     res.status(200).send({
@@ -878,7 +865,6 @@ exports.getStakingSettings = catchAsyncErrors(async (req, res, next) => {
     if (!userCoin) {
       return res.status(404).json({ success: false, msg: 'User not found' });
     }
-    console.log('userCoin: ', userCoin);
 
 
 
@@ -894,8 +880,6 @@ exports.getStakingSettings = catchAsyncErrors(async (req, res, next) => {
 exports.updateStakingSettings = catchAsyncErrors(async (req, res, next) => {
   try {
     const { disabledCoins, customRates } = req.body;
-    console.log('req.body: ', req.body);
-    console.log('disabledCoins: ', disabledCoins, customRates);
 
     const userCoin = await userCoins.findOne({ user: req.params.id });
     if (!userCoin) {
@@ -929,7 +913,6 @@ exports.getStakingRewards = catchAsyncErrors(async (req, res, next) => {
     }
 
     const stakings = userCoinsData.transactions.filter(t => t.stakingData && t.stakingData.isStaking);
-    console.log('userCoins: ', stakings);
 
     res.status(201).json({
       success: true,

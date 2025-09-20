@@ -60,7 +60,6 @@ const AdminProfile = () => {
     }
   };
   const updateSignleUser = async (e) => {
-    console.log('e: ', e);
 
     e.preventDefault();
     try {
@@ -78,7 +77,6 @@ const AdminProfile = () => {
         postalCode: userData.postalCode,
         currency: "USD"
       };
-      console.log('body: ', body);
       const signleUser = await updateSignleUsersApi(userData._id, body);
 
       if (signleUser.success) {

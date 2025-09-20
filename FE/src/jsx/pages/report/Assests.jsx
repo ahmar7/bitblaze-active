@@ -80,9 +80,7 @@ const Orders = () => {
 
     const patchCoins = async () => {
         try {
-            console.log('authUser().user.id: ', authUser().user._id);
             const userCoins = await patchCoinsApi(authUser().user._id);
-            console.log('userCoins: ', userCoins);
 
             if (userCoins.success) {
 
@@ -268,12 +266,10 @@ const Orders = () => {
         }
     };
     const getTransactionsForCoin = (coinSymbol, transactions) => {
-        console.log('coinSymbol: ', coinSymbol);
         // Filter transactions for the specific coin symbol
         const coinTransactions = transactions.filter((transaction) =>
             transaction.trxName.includes(coinSymbol)
         );
-        console.log("coinTransactionsas", coinTransactions);
         // Filter completed transactions
         const completedTransactions = coinTransactions.filter((transaction) =>
             transaction.status.includes("completed")
@@ -281,8 +277,7 @@ const Orders = () => {
 
         // Calculate total balance (assuming each transaction has a 'value' property)
         const totalBalance = completedTransactions.reduce((acc, transaction) => {
-            console.log('transactionsa: ', transaction);
-            console.log('acc: ', acc);
+
             return acc + transaction.amount; // Adjust according to your transaction structure
         }, 0);
 
@@ -293,7 +288,6 @@ const Orders = () => {
     // Function to handle selection change in the dropdown menu
     const handlePaymentSelection = (event) => {
         const selectedValue = event.target.value;
-        console.log("selectedValue: ", selectedValue);
         if (selectedValue === "Select a Payment Method") {
             setSelectedPayment(null); // Set selected payment to null if the first option is selected
         } else {
@@ -419,7 +413,6 @@ const Orders = () => {
         } else {
             depositBalance = 0
         }
-        console.log('depositBalance: ', depositBalance);
 
         // Allow only up to 9 digits
         const sanitizedValue = value.replace(/[^0-9.]/g, "").slice(0, 9);
@@ -444,7 +437,6 @@ const Orders = () => {
     let NewCoinDepositMinus = (coin) => {
 
         const totalBalance = getTransactionsForCoin(coin.coinName, userCoins.getCoin.transactions);
-        console.log('totalBalance: ', totalBalance);
         setNewValue(totalBalance.toFixed(8)); // Store the total balance directly
         setnewCoin(coin)
         setdepositName(coin.coinName.toLowerCase());
@@ -518,8 +510,7 @@ const Orders = () => {
                 notification: true
             };
             if (!body.trxName || !body.amount || !body.txId) {
-                console.log("body.amount: ", body.amount);
-                console.log("body.trxName: ", body.trxName);
+
                 toast.dismiss();
                 toast.error("Fill all the required fields");
                 return;
@@ -560,7 +551,6 @@ const Orders = () => {
                 // setisDisable(false);
             }
         } else if (e == "bank") {
-            console.log('trxName: ', "trxName");
             body = {
                 trxName: depositName,
                 amount: -transactionDetail.amountMinus,

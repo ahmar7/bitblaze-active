@@ -189,7 +189,6 @@ const AdminHeader = (props) => {
 
 
         settemporaryUser(notification)
-        console.log('notification: ', notification);
         setModal3(true);
     }
     let toggleModelClose = () => {

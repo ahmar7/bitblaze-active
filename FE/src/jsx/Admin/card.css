@@ -15,12 +15,13 @@
     /* Darkened background */
 }
 
-.dark-bgs{
+.dark-bgs {
     background-color: black;
     padding: 20px;
     border-radius: 10px;
 }
-.note-head{
+
+.note-head {
     font-size: 23px !important;
     margin-bottom: 10px !important;
     color: black;
@@ -171,43 +172,97 @@
 
 .this-model .modal-dialog {
     margin: auto;
-} 
-  .admin-permissions-section {
+}
+
+.admin-permissions-section {
     border-radius: 12px;
     padding: 1.5rem;
     background: var(--bg-muted-100);
-  }
-  
-  .permission-card {
+}
+
+.permission-card {
     transition: all 0.3s ease;
     border: 1px solid var(--border-color);
-  }
-  
-  .permission-card:hover {
+}
+
+.permission-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
-  }
-  
-  /* Toggle switch styling */
-  .relative.inline-block input:checked + label {
+}
+
+/* Toggle switch styling */
+.relative.inline-block input:checked+label {
     background-color: var(--color-primary-500);
-  }
-  
-  .relative.inline-block input:checked + label:before {
+}
+
+.relative.inline-block input:checked+label:before {
     transform: translateX(24px);
-  }
-  
-  .relative.inline-block label {
+}
+
+.relative.inline-block label {
     transition: background-color 0.3s;
-  }
-  
-  .relative.inline-block label:before {
+}
+
+.relative.inline-block label:before {
     transition: transform 0.3s;
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .permissions-grid {
-      grid-template-columns: 1fr;
+        grid-template-columns: 1fr;
     }
-  }
- 
+}
+
+
+/* Skeleton base */
+.permissions-grid .skeleton {
+    background: linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 37%, #e0e0e0 63%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius: 6px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -400px 0;
+    }
+
+    100% {
+        background-position: 400px 0;
+    }
+}
+
+/* Card structure */
+.permissions-grid .skeleton-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 16px;
+}
+
+.permissions-grid
+
+/* Skeleton parts */
+.skeleton-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.permissions-grid .skeleton-title {
+    width: 150px;
+    height: 20px;
+}
+
+.permissions-grid .skeleton-switch {
+    width: 40px;
+    height: 20px;
+}
+
+.permissions-grid .skeleton-text {
+    width: 80%;
+    height: 14px;
+}

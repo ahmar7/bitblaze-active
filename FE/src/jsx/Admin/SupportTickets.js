@@ -22,7 +22,6 @@ const AllTicket = () => {
     // Fetch tickets from the server
     const fetchTickets = async () => {
         try {
-            console.log('Admin: ', Admin);
             setIsLoading(true);
             const allTickets = await adminTicketsApi();
 
@@ -46,7 +45,6 @@ const AllTicket = () => {
                 );
 
                 // Filter tickets based on role
-                console.log('ticketsWithUserDetails: ', ticketsWithUserDetails);
                 let filteredTickets = ticketsWithUserDetails;
 
                 if (authUser().user.role === "subadmin") {
@@ -56,7 +54,6 @@ const AllTicket = () => {
                             ticket.userDetails.signleUser.assignedSubAdmin === authUser().user._id)
                     );
                 }
-                console.log('filteredTickets: ', filteredTickets);
 
                 setTickets(filteredTickets); // Store only filtered and processed tickets
             }

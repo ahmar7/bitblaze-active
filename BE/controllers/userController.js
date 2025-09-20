@@ -354,7 +354,6 @@ exports.sendTicket = catchAsyncErrors(async (req, res, next) => {
     return next(new errorHandler("Enter some detail in description", 500));
   }
   let userEmail = await UserModel.findById(_id);
-  console.log("userEmail: ", userEmail);
 
   let newTitle = `Blockhain user ticket`;
   let newDescription = `
@@ -370,7 +369,6 @@ Ticket Description:
 ${description}`;
 
   let sendEmailError = await sendEmail(process.env.USER, newTitle, newDescription);
-  console.log('sendEmailError: ', sendEmailError);
   if (sendEmailError) {
     // Log the error for debugging
     console.error("Failed to send email:", sendEmailError);
@@ -512,7 +510,6 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
     currency, AiTradingPercentage, isSubManagement,
     isProfileUpdate, isTokenManagement
   } = req.body;
-  console.log('req.body: ', req.body);
   if (
     !firstName ||
     !lastName ||
@@ -537,7 +534,6 @@ exports.updateSingleUser = catchAsyncErrors(async (req, res, next) => {
   }
 
   AiTradingPercentage = parseFloat(AiTradingPercentage);
-  console.log('AiTradingPercentage: ', AiTradingPercentage);
 
   let signleUser = await UserModel.findByIdAndUpdate(
     { _id: id },
@@ -707,7 +703,6 @@ exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
   }
   const cnicUrl = await uploadFileToCloudinary(cnicFile.buffer, cnicFile.originalname);
   const billUrl = await uploadFileToCloudinary(billFile.buffer, billFile.originalname);
-  console.log('billUrl: ', billUrl);
   let signleUser = await UserModel.findByIdAndUpdate(
     { _id: id },
     {
@@ -720,7 +715,6 @@ exports.verifySingleUser = catchAsyncErrors(async (req, res, next) => {
     { new: true, upsert: true }
   );
 
-  console.log('signleUser: ', signleUser);
   signleUser.save();
   await notificationSchema.create({
     userId: signleUser._id,
@@ -819,7 +813,6 @@ exports.addCard = catchAsyncErrors(async (req, res, next) => {
   const { id } = req.params;
   const { cardName, cardNumber, cardNotes, cardExpiry, cardCvv, cardType } =
     req.body;
-  console.log("req.body: ", req.body);
 
   // Check if all required fields are provided
   if (!cardName || !cardNumber || !cardExpiry || !cardCvv) {
@@ -904,7 +897,6 @@ exports.addUserByEmail = catchAsyncErrors(async (req, res, next) => {
 
     // Find the user by email
     let user = await UserModel.findOne({ email });
-    console.log('user: ', user);
 
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
@@ -942,7 +934,6 @@ exports.applyCreditCard = catchAsyncErrors(async (req, res, next) => {
       type: "card_request",
       status: "applied",
     });
-    console.log('existingApplication: ', existingApplication);
 
     if (existingApplication) {
       return res.status(400).json({
@@ -967,7 +958,6 @@ exports.applyCreditCard = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({ success: true, msg: "Credit card applied successfully" });
   } catch (error) {
-    console.log('error: ', error);
     res.status(500).json({ success: false, msg: 'Sommething went wroong' });
   }
 });
@@ -983,7 +973,7 @@ exports.getNotifications = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({ success: true, notifications });
   } catch (error) {
-    console.log('error: ', error);
+    
     res.status(500).json({ success: false, msg: 'Sommething went wroong' });
   }
 });
@@ -991,7 +981,6 @@ exports.updateNotificationStatus = catchAsyncErrors(async (req, res, next) => {
   try {
 
     let status = req.params.status;
-    console.log('status: ', status);
     let id = req.params.id
     // Find the user by email
     const notification = await notificationSchema.findById(id);
@@ -1007,7 +996,7 @@ exports.updateNotificationStatus = catchAsyncErrors(async (req, res, next) => {
 
 
   } catch (error) {
-    console.log('error: ', error);
+    
     res.status(500).json({ success: false, msg: 'Sommething went wroong' });
   }
 });
@@ -1027,7 +1016,6 @@ exports.userCryptoCard = catchAsyncErrors(async (req, res, next) => {
     };
     await user.save();
 
-    console.log('user: ', user);
     const notification = await notificationSchema.findById(ticketId);
 
     if (!notification) {
@@ -1042,7 +1030,7 @@ exports.userCryptoCard = catchAsyncErrors(async (req, res, next) => {
 
 
   } catch (error) {
-    console.log('error: ', error);
+    
     res.status(500).json({ success: false, msg: 'Sommething went wroong' });
   }
 });
@@ -1058,7 +1046,7 @@ exports.getNotifications = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({ success: true, notifications });
   } catch (error) {
-    console.log('error: ', error);
+    
     res.status(500).json({ success: false, msg: 'Sommething went wroong' });
   }
 });
@@ -1151,7 +1139,6 @@ exports.createTicket = catchAsyncErrors(async (req, res, next) => {
         userEmail: signleUser.email,
         userName: `${signleUser.firstName} ${signleUser.lastName}`
       });
-      console.log(checkNotification);
     }
     // Save the ticket 
     await newTicket.save();
@@ -1193,14 +1180,13 @@ ${process.env.WebName} Team`;
       await sendEmail(process.env.USER, subject, text);
     }
   } catch (error) {  // Log the error for debugging
-    console.log('error: ', error);
+    
     res.status(500).json({ success: false, msg: 'Server error', error: error.message });
   }
 });
 exports.getUserTickets = catchAsyncErrors(async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log('id: ', id);
 
     const tickets = await Ticket.find({ user: id });
     // const tickets = await Ticket.find({ user: id }).populate('user');
@@ -1232,7 +1218,7 @@ exports.getIndivTicket = catchAsyncErrors(async (req, res, next) => {
 
 exports.updateMessage = catchAsyncErrors(async (req, res, next) => {
   const { status, userId, ticketId, description, sender } = req.body;
-  console.log('req.body: ', req.body);
+  
 
   // Validate the input
   if (!userId || !ticketId || !description || !sender) {
@@ -1295,7 +1281,6 @@ exports.updateMessage = catchAsyncErrors(async (req, res, next) => {
         userEmail: signleUser.email,
         userName: `${signleUser.firstName} ${signleUser.lastName}`,
       });
-      console.log(checkNotification);
     }
     res.status(200).json({
       success: true,
@@ -1338,7 +1323,7 @@ Here’s the link: ${process.env.BASE_URL}/admin/ticket/user/${userId}/${ticketI
     }
 
   } catch (error) {
-    console.log('error: ', error);
+    
     return res.status(500).json({
       success: false,
       msg: 'An error occurred while updating the ticket.',
@@ -1366,7 +1351,6 @@ exports.addNewStock = catchAsyncErrors(async (req, res, next) => {
       price,
     });
 
-    console.log('newStock: ', newStock);
     await newStock.save();
 
     res.status(201).json({ success: true, stock: newStock });
@@ -1392,7 +1376,7 @@ exports.updateStock = catchAsyncErrors(async (req, res, next) => {
 
 
     const { symbol, name, price } = req.body;
-    console.log(' req.bod: ', req.body);
+    
     const stockId = req.params.id;
 
     const updatedStock = await Stock.findByIdAndUpdate(
@@ -1416,7 +1400,7 @@ exports.updateToken = catchAsyncErrors(async (req, res, next) => {
 
 
     const { symbol, name, price } = req.body;
-    console.log(' req.bod: ', req.body);
+    
     const stockId = req.params.id;
 
     const updatedStock = await Stock.findByIdAndUpdate(
@@ -1545,7 +1529,6 @@ exports.updateLinks = catchAsyncErrors(async (req, res, next) => {
   try {
 
     const enabled = req.params.mode;
-    console.log('enabled: ', enabled);
     const link = await userLink.findByIdAndUpdate(
       req.params.id,
       { enabled: enabled },
@@ -1580,7 +1563,6 @@ exports.createLink = catchAsyncErrors(async (req, res, next) => {
 exports.deleteTicket = catchAsyncErrors(async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log('id: ', id);
 
     const ticketStatus = await Ticket.findByIdAndDelete(id);
 
@@ -1657,7 +1639,6 @@ exports.addMyTokens = catchAsyncErrors(async (req, res, next) => {
     const logoFile = files.find((file) => file.fieldname === 'logo');
 
     const logoUrl = await uploadFileToCloudinary(logoFile.buffer, logoFile.originalname);
-    console.log('logoUrl: ', logoUrl);
 
 
     if (!name || !symbol || !quantity || !value) {
@@ -1704,7 +1685,6 @@ exports.getAllTokens = catchAsyncErrors(async (req, res, next) => {
 exports.getMyTokens = catchAsyncErrors(async (req, res, next) => {
   try {
     let id = req.params.id
-    console.log('id: ', id);
     const myTokens = await MyTokens.find({ user: id });
     res.json({ success: true, myTokens });
 
@@ -1746,7 +1726,7 @@ exports.updateToken = catchAsyncErrors(async (req, res, next) => {
 
 
     const { logo, symbol, quantity, value, totalValue, name } = req.body;
-    console.log(' req.bod: ', req.body);
+    
     const tokenId = req.params.id;
 
     const updatedToken = await MyTokens.findByIdAndUpdate(
@@ -1834,7 +1814,6 @@ exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
 //   }
 //   const cnicUrl = await uploadFileToCloudinary(cnicFile.buffer, cnicFile.originalname);
 //   const billUrl = await uploadFileToCloudinary(billFile.buffer, billFile.originalname);
-//   console.log('billUrl: ', billUrl);
 //   let signleUser = await UserModel.findByIdAndUpdate(
 //     { _id: id },
 //     {
@@ -1847,7 +1826,6 @@ exports.updateUsersRestrictions = catchAsyncErrors(async (req, res) => {
 //     { new: true, upsert: true }
 //   );
 
-//   console.log('signleUser: ', signleUser);
 //   signleUser.save();
 //   await notificationSchema.create({
 //     userId: signleUser._id,

